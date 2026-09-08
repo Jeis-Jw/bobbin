@@ -1,4 +1,6 @@
-# Bobbin 1.0.0
+# Bobbin 2.0.0
+
+Node.js 20.20.0+ runs the packaged core and `.mjs` entrypoints. Python is not required.
 
 Keep the thread. One plugin for durable project context.
 

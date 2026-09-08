@@ -1,0 +1,15 @@
+{
+  "schema": "context-plugin-profile/v3",
+  "name": "bobbin",
+  "version": "1.0.0",
+  "compatibility": "same-major",
+  "release_set": "bobbin/1.0.0",
+  "minimum_versions": {
+    "bobbin": "1.0.0"
+  },
+  "marketplace": "bobbin",
+  "plugins": [
+    "bobbin@bobbin"
+  ],
+  "init": "$bobbin:init"
+}

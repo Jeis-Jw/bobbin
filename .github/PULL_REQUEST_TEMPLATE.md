@@ -10,9 +10,9 @@ Describe the user-visible or contributor-visible outcome.
 
 ## Verification
 
-- [ ] Python 3.11 full suite
-- [ ] Python 3.13 full suite
-- [ ] `python -m compileall -q plugins tests`
+- [ ] Node 20.20+ product suite
+- [ ] TypeScript/Python compatibility and installed-package checks
+- [ ] `npm run check` and generated runtime synchronized
 - [ ] `git diff --check`
 - [ ] English/Korean public-document parity checked
 - [ ] Record-created behavior regression added when retrieval changed

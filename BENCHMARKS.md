@@ -1,5 +1,12 @@
 # Benchmarks and evidence
 
+The measurements below belong to the historical Python implementation, not the
+TypeScript runtime. Its frozen source, tests and evidence now live under
+`tests/compat/python/`; interpret historical `tests/...` paths relative to that
+directory. Current runtime correctness and package checks are documented in
+[TypeScript compatibility](docs/compatibility.md). Node latency and end-to-end
+model token use have not been benchmarked here.
+
 These measurements cover bytes and tool I/O bounds; they are not end-to-end model token measurements.
 
 ## Bobbin 1.0.0 regression check
@@ -38,7 +45,7 @@ This run found a small overhead, not exact performance parity: +0.7–2.0 ms for
 reads and +8.0 ms for explicit recording. It does not establish host/LLM latency,
 token use, answer quality, cold-cache behavior, or large-vault write performance.
 Raw samples, p95 values, I/O counters and runtime source hashes are in
-[the measured evidence](tests/context-v1/evidence/bobbin-1.0.0-regression-python313.json).
+[the measured evidence](tests/compat/python/tests/context-v1/evidence/bobbin-1.0.0-regression-python313.json).
 
 To reproduce, extract the baseline into a separate temporary directory without
 switching or resetting the candidate checkout, then run:
@@ -53,7 +60,7 @@ changed instrumented I/O, failed recording or inconsistent final indexes.
 
 ## Reproducible model-free checks
 
-Run the committed token-I/O fixture from the repository root:
+Run the committed token-I/O fixture from `tests/compat/python/`:
 
 ```bash
 python -m pytest -q -s tests/context-v1/test_token_io_evidence.py

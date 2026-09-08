@@ -162,7 +162,7 @@ def benchmark(baseline, candidate, repeats):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", type=Path, required=True)
-    parser.add_argument("--candidate", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--candidate", type=Path, default=Path(__file__).resolve().parents[1] / "tests/compat/python", help="Frozen Python reference; this script does not benchmark the Node runtime.")
     parser.add_argument("--repeats", type=int, default=31)
     args = parser.parse_args()
     if args.repeats < 5:

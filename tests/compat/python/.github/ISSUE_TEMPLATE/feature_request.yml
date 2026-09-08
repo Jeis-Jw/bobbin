@@ -1,0 +1,49 @@
+name: Feature request
+description: Propose a focused improvement to Bobbin
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the project-context problem first. A proposed implementation is welcome but optional.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What repeated explanation, decision drift, recall cost, or workflow gap are you encountering?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What observable behavior would solve the problem?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What can users do today, and why is it insufficient?
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Relevant surface
+      options:
+        - context-core
+        - context-decision
+        - Optional semantic owner
+        - Installation or host integration
+        - Documentation or community
+        - Unsure
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This request does not require automatically saving full conversations.
+          required: true

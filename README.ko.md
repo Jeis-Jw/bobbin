@@ -13,7 +13,10 @@ Bobbin은 AI 코딩 세션이 바뀌어도 프로젝트의 결정과 이유, 확
 
 ## 설치
 
-Bobbin 1.0.0은 Python 3.11 이상과 Codex 또는 Claude Code가 필요합니다.
+TypeScript 코어와 CLI는 Node.js 20.20.0 이상에서 독립적으로 실행됩니다. Python이나
+플러그인 설치는 필요하지 않습니다. [설치·라이브러리 API](docs/node-api.ko.md)와
+[호환성·전환 절차](docs/compatibility.md)를 참고하세요. 선택적으로 Agent plugin을
+사용할 때는 Codex 또는 Claude Code가 필요합니다.
 소스 저장소는 [Jeis-Jw/bobbin](https://github.com/Jeis-Jw/bobbin)입니다.
 
 ```bash

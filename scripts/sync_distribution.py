@@ -14,7 +14,16 @@ def surfaces():
     release = {"schema": "context-plugin-release-set/v1", "version": version,
                "runtime_compatibility": "single-package", "automatic_update": False, "members": {"bobbin": version}}
     entry = {"name": "bobbin", "version": version, "description": manifest["description"]}
+    package = json.loads((ROOT / "package.json").read_text())
+    assert package["name"] == "@bobbin/context"
+    package["version"] = version
+    lock = json.loads((ROOT / "package-lock.json").read_text())
+    lock["version"] = version
+    lock["packages"][""]["version"] = version
     return {
+        "package.json": package,
+        "package-lock.json": lock,
+        "src/release.json": {"name": "bobbin", "version": version},
         "plugins/bobbin/.claude-plugin/plugin.json": {key: manifest[key] for key in ("name", "version", "description", "author")},
         ".agents/plugins/marketplace.json": {"name": "bobbin", "interface": {"displayName": "Bobbin"},
             "metadata": {"release_set": release}, "plugins": [{**entry,

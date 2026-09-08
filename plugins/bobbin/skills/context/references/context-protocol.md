@@ -1,6 +1,8 @@
 # context-common/v2 storage kernel
 
-Bobbin 1.0.0 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
+The TypeScript runtime uses one packaged core. For executable API/CLI and preview contracts, see the [current transport contract](../../context/references/node-runtime.md). The artifact schemas, semantic rules and lifecycle constraints below remain applicable; former Python subprocess/handshake and mutation-bundle details are historical.
+
+Bobbin 2.0.0 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
 
 This is the public, host-independent storage, recall, and write contract implemented by `context-core`. Product composition and distribution identity live in the repository and plugin READMEs; executable schemas and tests verify runtime behavior.
 

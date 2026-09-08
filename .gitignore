@@ -22,3 +22,8 @@ htmlcov/
 .task-worker.yml
 .pcms-context.json
 .pcms-scope
+
+node_modules/
+*.tgz
+.bobbin-runtime/
+/artifacts/

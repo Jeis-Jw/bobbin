@@ -3,6 +3,8 @@ name: archive
 description: Preserve immutable long-form source material that has been adopted as evidence for durable context.
 ---
 
+Runtime: Node.js 20.20.0+. Use the `.mjs` entrypoint in this package; no Python or global plugin lookup.
+
 # Context archive
 
 Follow the [shared recording policy](../context/references/recording-policy.md) first. On a durable signal, resolve project settings once; only enabled owners participate automatically. User-approval instructions below describe `explicit` mode. In `auto` and `adaptive`, use policy authorization on the same validated write path; semantic attestations must remain truthful. Disabled features still allow explicit historical reads.

@@ -4,30 +4,30 @@ Thank you for helping improve Bobbin. Start with the user-facing [README](./READ
 
 ## Development setup
 
-The runtime supports Python 3.11 or newer and uses only the Python standard library. Tests require `pytest`.
-
-```bash
-python3.11 -m pip install "pytest>=8,<10"
-python3.13 -m pip install "pytest>=8,<10"
-```
+The product uses TypeScript and Node.js 20.20.0+. Install development dependencies
+with `npm ci`. Runtime dependencies are limited to Node built-ins. Python 3.13 is
+optional and used only for the frozen compatibility oracle.
 
 Work on a topic branch or linked worktree. Do not add a repository-owned `context/` or `wiki/` directory: this public component keeps product code, tests, protocols, and reproducible release evidence only.
 
 ## Before opening a pull request
 
-Run the complete suite on both supported interpreter lanes when they are available:
+Run the product gates and the optional reference comparisons:
 
-```bash
-python3.11 -m pytest -q
-python3.13 -m pytest -q
-python3.11 -m compileall -q plugins tests
-python3.13 -m compileall -q plugins tests
+```sh
+npm run check
+npm test
+npm run test:compat
+npm run test:package
 python3 scripts/sync_distribution.py --check
 python3 scripts/sync_guidance.py --check
 git diff --check
 ```
 
-Keep production code standard-library-only. A focused test is useful while developing, but the complete suite is the release gate.
+The build regenerates the packaged `plugins/bobbin/dist/` output from `src/`.
+Keep that output with plugin releases. Never edit or develop the frozen Python
+reference as a parallel product. `npm run test:reference` runs its historical
+regression suite separately; it does not validate TypeScript behavior.
 
 When changing a public behavior or contract:
 
@@ -35,8 +35,8 @@ When changing a public behavior or contract:
 - keep canonical runtime instructions, schemas, identifiers, commands, and machine fields in English;
 - preserve semantic approval, actual-body comparison, core-only physical writes, and bounded recall unless the change explicitly redesigns those contracts;
 - add a record-created regression for retrieval behavior and retain the model-free scale and token-I/O checks;
-- use `plugins/bobbin/.codex-plugin/plugin.json` as the single package/version source; run `scripts/sync_distribution.py` to regenerate the Claude manifest, both catalogs and the profile;
-- use core's `POLICY_BODY` as the managed-guidance source; run `scripts/sync_guidance.py` after changes;
+- use `plugins/bobbin/.codex-plugin/plugin.json` as the single package/version source; run `scripts/sync_distribution.py` to regenerate the npm package/lock versions, runtime release metadata, Claude manifest, both catalogs and the profile;
+- use `src/contracts.json`'s `policy` as the managed-guidance source; run `scripts/sync_guidance.py` after changes;
 - update both host catalogs, both plugin manifests, profiles, fixtures, and distribution tests together when source, marketplace, protocol, or version surfaces change.
 
 ## Pull requests and commits

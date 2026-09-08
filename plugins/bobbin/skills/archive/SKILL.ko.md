@@ -3,6 +3,8 @@ name: archive
 description: durable context의 근거로 채택한 불변 장문 원본을 보존합니다.
 ---
 
+실행 요건: Node.js 20.20.0 이상. 이 패키지의 `.mjs` 진입점을 사용하며 Python이나 전역 플러그인을 탐색하지 않는다.
+
 # Context archive
 
 먼저 [공통 기록 정책](../context/references/recording-policy.md)을 따릅니다. 기능 활성화와 `explicit|auto|adaptive` 승인은 프로젝트의 `.bobbin/config.json`이 정합니다. 아래 사용자 승인 절차는 `explicit` 모드에 적용하며, 자동 모드에서는 같은 검증 경로에 정책 승인을 전달합니다. 기능이 꺼져 있으면 자동 참여와 새 기록을 중단하지만 명시적 과거 기록 읽기는 가능합니다. 의미 검증과 사용자 결정의 근거는 모든 모드에서 유지합니다.

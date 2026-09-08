@@ -30,8 +30,8 @@ body:
   - type: input
     id: python_version
     attributes:
-      label: Python version
-      placeholder: Python 3.13.x
+      label: Node.js / Electron version
+      placeholder: Node.js 24.x or Electron 44.x
     validations:
       required: true
   - type: textarea

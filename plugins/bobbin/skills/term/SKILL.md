@@ -3,6 +3,8 @@ name: term
 description: When a project-specific term can change interpretation, recall, compare, and propose a TERM lifecycle result without writing the repository.
 ---
 
+Runtime: Node.js 20.20.0+. Use the `.mjs` entrypoint in this package; no Python or global plugin lookup.
+
 # Context term
 
 Follow the [shared recording policy](../context/references/recording-policy.md) first. On a durable signal, resolve project settings once; only enabled owners participate automatically. User-approval instructions below describe `explicit` mode. In `auto` and `adaptive`, use policy authorization on the same validated write path; semantic attestations must remain truthful. Disabled features still allow explicit historical reads.
@@ -17,7 +19,7 @@ This skill is the `context-term/v1` semantic owner and never writes repository b
 - Use `search` or `read` only after an exact `term-encountered` signal, not automatically for every term.
 - Rebuild owner results from live Current source and the candidate or request before issuing a receipt. Read no path outside the canonical area and no symlink component.
 
-For capture, use sibling `scripts/term_workflow.py preview --host <host> --core-cli <loaded-core-cli> --inline ...`, then its `apply` command only after approval. It derives verified inventory and doctor state directly; do not hand-build preflight JSON. Keep its receipt path and approval digest in agent state only.
+For capture, use sibling `scripts/term_workflow.mjs preview --host <host> --core-cli <loaded-core-cli> --inline ...`, then its `apply` command only after approval. It derives verified inventory and doctor state directly; do not hand-build preflight JSON. Keep its receipt path and approval digest in agent state only.
 
 Follow context-core's active-language contract. An explicit user language choice wins; otherwise use the host preference, then the established conversation language, then English. OS locale is not authoritative, and code, filenames, quotations, or one foreign term do not switch language. Use the active language for user-facing responses, questions, previews, and explanatory errors. Keep machine-readable surfaces in English and preserve artifact prose without semantic translation.
 

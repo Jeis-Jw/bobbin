@@ -1,0 +1,2252 @@
+{
+  "common_keys": [
+    "schema",
+    "id",
+    "title",
+    "summary",
+    "created_at",
+    "updated_at",
+    "captured_from",
+    "source_refs",
+    "tags",
+    "search_terms"
+  ],
+  "additive_keys": {
+    "context-snapshot/v1": [
+      "anchors"
+    ],
+    "context-observation/v1": [
+      "kind_hint",
+      "verified_at",
+      "affects_paths",
+      "relations",
+      "supersedes",
+      "superseded_by",
+      "retired_at",
+      "retired_reason",
+      "retirement_note"
+    ],
+    "context-archive/v1": [],
+    "context-decision/v1": [
+      "scope",
+      "decision_key",
+      "revisit_when",
+      "revisit_on",
+      "relations",
+      "supersedes",
+      "superseded_by",
+      "retired_at",
+      "retired_reason",
+      "retirement_note"
+    ]
+  },
+  "sections": {
+    "context-snapshot/v1": [
+      [
+        "Current context",
+        "Open items",
+        "Next steps",
+        "Decided",
+        "References",
+        "Capture candidates"
+      ],
+      [
+        "Current context",
+        "Open items",
+        "Next steps"
+      ]
+    ],
+    "context-observation/v1": [
+      [
+        "Observation",
+        "Evidence",
+        "Impact",
+        "Current handling",
+        "Follow-up conditions"
+      ],
+      [
+        "Observation",
+        "Evidence"
+      ]
+    ],
+    "context-archive/v1": [
+      [
+        "Content"
+      ],
+      [
+        "Content"
+      ]
+    ],
+    "context-decision/v1": [
+      [
+        "Decision",
+        "Rationale",
+        "Rejected alternatives",
+        "Evidence and constraints",
+        "Trade-offs",
+        "Revisit conditions"
+      ],
+      [
+        "Decision",
+        "Rationale",
+        "Rejected alternatives"
+      ]
+    ]
+  },
+  "aliases": {
+    "context-snapshot/v1": {
+      "현재 맥락": "Current context",
+      "열린 항목": "Open items",
+      "다음 단계": "Next steps",
+      "정해진 것": "Decided",
+      "참조": "References",
+      "capture 후보": "Capture candidates"
+    },
+    "context-observation/v1": {
+      "관찰": "Observation",
+      "근거": "Evidence",
+      "영향": "Impact",
+      "현재 처리": "Current handling",
+      "후속 조건": "Follow-up conditions"
+    },
+    "context-decision/v1": {
+      "결정": "Decision",
+      "취지": "Rationale",
+      "반려대안": "Rejected alternatives",
+      "근거와 제약": "Evidence and constraints",
+      "트레이드오프": "Trade-offs",
+      "재평가 조건": "Revisit conditions"
+    },
+    "context-assumption/v1": {
+      "가정": "Assumption",
+      "근거": "Basis",
+      "확정 조건": "Confirmation conditions",
+      "반증 조건": "Refutation conditions"
+    },
+    "context-term/v1": {
+      "정의": "Definition"
+    }
+  },
+  "root_seed": "---\nschema: \"context-root-index/v1\"\nindex: true\nowner: \"context-core\"\nsummary: \"Catalog of shared project context areas\"\n---\n\n# Context\n\n## Areas\n<!-- BEGIN CONTEXT GENERATED:areas -->\n<!-- END CONTEXT GENERATED:areas -->\n",
+  "builtin_specs": [
+    [
+      {
+        "area": "snapshot",
+        "path": "context/snapshot/snapshot.index.md",
+        "owner": "context-core",
+        "claims": [
+          "snapshot"
+        ],
+        "artifact_schema": "context-snapshot/v1",
+        "authority": "staging"
+      },
+      "Snapshot",
+      "session handoff staging"
+    ],
+    [
+      {
+        "area": "observation",
+        "path": "context/observation/observation.index.md",
+        "owner": "context-core",
+        "claims": [
+          "observation"
+        ],
+        "artifact_schema": "context-observation/v1",
+        "authority": "evidence"
+      },
+      "Observation",
+      "Non-authoritative findings and evidence"
+    ],
+    [
+      {
+        "area": "archive",
+        "path": "context/archive/archive.index.md",
+        "owner": "context-core",
+        "claims": [
+          "archive"
+        ],
+        "artifact_schema": "context-archive/v1",
+        "authority": "evidence"
+      },
+      "Archive",
+      "Immutable source material adopted as evidence"
+    ]
+  ],
+  "init_contents": {
+    "context/context.index.md": "---\nschema: \"context-root-index/v1\"\nindex: true\nowner: \"context-core\"\nsummary: \"Catalog of shared project context areas\"\n---\n\n# Context\n\n## Areas\n<!-- BEGIN CONTEXT GENERATED:areas -->\n- [[context/archive/archive.index]] — Archive: Immutable source material adopted as evidence <!-- context-area {\"area\":\"archive\",\"path\":\"context/archive/archive.index.md\",\"owner\":\"context-core\",\"claims\":[\"archive\"],\"artifact_schema\":\"context-archive/v1\",\"authority\":\"evidence\"} -->\n- [[context/observation/observation.index]] — Observation: Non-authoritative findings and evidence <!-- context-area {\"area\":\"observation\",\"path\":\"context/observation/observation.index.md\",\"owner\":\"context-core\",\"claims\":[\"observation\"],\"artifact_schema\":\"context-observation/v1\",\"authority\":\"evidence\"} -->\n- [[context/snapshot/snapshot.index]] — Snapshot: session handoff staging <!-- context-area {\"area\":\"snapshot\",\"path\":\"context/snapshot/snapshot.index.md\",\"owner\":\"context-core\",\"claims\":[\"snapshot\"],\"artifact_schema\":\"context-snapshot/v1\",\"authority\":\"staging\"} -->\n<!-- END CONTEXT GENERATED:areas -->\n",
+    "context/snapshot/snapshot.index.md": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"snapshot\"\nowner: \"context-core\"\nartifact_schema: \"context-snapshot/v1\"\nauthority: \"staging\"\nsummary: \"session handoff staging\"\nsearch_terms: [\"handoff\",\"resume\"]\n---\n\n# Snapshot\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n",
+    "context/observation/observation.index.md": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"observation\"\nowner: \"context-core\"\nartifact_schema: \"context-observation/v1\"\nauthority: \"evidence\"\nsummary: \"Non-authoritative findings and evidence\"\nsearch_terms: [\"observation\",\"evidence\"]\n---\n\n# Observation\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+    "context/archive/archive.index.md": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"archive\"\nowner: \"context-core\"\nartifact_schema: \"context-archive/v1\"\nauthority: \"evidence\"\nsummary: \"Immutable source material adopted as evidence\"\nsearch_terms: [\"archive\",\"source\",\"evidence\"]\n---\n\n# Archive\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n"
+  },
+  "policy": "<!-- BEGIN context-core-policy (managed by context-core) -->\n## Durable context workflow\n\n- Resolve the active language from an explicit user language choice, then the host's preferred response language, then the established conversation language, and finally English. OS locale is not authoritative. Keep machine-readable surfaces in canonical English and preserve artifact prose.\n- Bobbin is one plugin. On a durable signal, read project-local `.bobbin/config.json` for enabled features and approval mode. Missing config preserves legacy registered features and explicit mode. Shared vaults do not share settings. Only a direct user request through Bobbin init may change settings.\n- Audit each user turn's new meaning once. No durable signal means zero context tool calls and no audit status or capture question. For a mechanical local edit, skip AGENTS/guidance discovery and exclude `context/`: use the named path, or infer one task subtree and search once. Never use `.`, `--hidden`, repository-wide globs or the repository root; ask for the path instead of widening. Keep the scope/anchor, read Current IDs and pending/dismissed references in a session-only ledger, never a copied vault.\n- Recall metadata first only if prior context can change the answer, then read selected actual bodies. Let the semantic owner compare actual bodies, scope, and rationale. IDs and metadata are not semantic evidence. Report a conflict before the primary conclusion. Hold an action whose change intent is unresolved: keep means not performed; supersede requires an explicit user choice. A satisfied revisit condition permits reassessment, not implementation. Never ask again for an already explicit choice.\n- Only enabled owners participate in automatic recall, routing and recording. Disabled features preserve records and explicit historical reads. SNAP is staging, OBS is evidence and DEC is an authoritative user choice. Do not turn uncertainty or an LLM preference into a user commitment.\n- Finish the primary request first. Follow the loaded shared recording policy: `explicit` records on direct, explicit, unconditional semantic approval; `auto` records eligible durable context without per-record questions; `adaptive` lets the LLM choose record or ask based on meaning, scope, evidence, conflicts and consequences. Ask only when the selected mode requires it, never a second storage question.\n- Core is the sole writer. Every mode uses internal preview and unchanged apply in the same response, with frozen payload, project/vault identity, CAS, lock and atomic-write checks. Never show the rendered storage body merely to authorize persistence. Never regenerate after approval; re-evaluate if settings or content change. A generic acknowledgement, praise, condition, edit request, or topic change is not user approval. Report policy-authorized records honestly. Recording policy grants no unrelated execution or publication permission.\n<!-- END context-core-policy (managed by context-core) -->",
+  "merge_attributes": "# BEGIN context-core-merge (managed by context-core)\n# Generated context indexes are projections of the artifacts. Let Git keep both sides,\n# then run `context_cli.mjs refresh --fix index` to re-derive the canonical index.\ncontext/**/*.index.md merge=union\n# END context-core-merge (managed by context-core)",
+  "core_schema": {
+    "schema": "context-core-schema/v1",
+    "protocol": "context-common/v2",
+    "storage_root": "context/",
+    "root_override": true,
+    "features": [
+      "context-owner-descriptor/v2",
+      "filesystem-vault/v1",
+      "typed-relations/v1",
+      "owner-inline-workflow/v1",
+      "context-archive/v1",
+      "bobbin-project/v1",
+      "recording-policy/v1"
+    ],
+    "id": "ctx_<lowercase-uuidv4-hex>",
+    "json_success": {
+      "ok": true,
+      "result": {}
+    },
+    "preview_success": {
+      "ok": true,
+      "result": {
+        "applied": false,
+        "state": "awaiting_approval"
+      }
+    },
+    "json_error": {
+      "ok": false,
+      "error": {
+        "code": "string",
+        "message": "string",
+        "details": {}
+      }
+    },
+    "exit_codes": {
+      "usage_schema_filename": 2,
+      "not_found": 3,
+      "conflict": 5,
+      "integrity_index": 6
+    },
+    "commands": [
+      "schema",
+      "capabilities",
+      "settings",
+      "doctor",
+      "init",
+      "bootstrap",
+      "draft",
+      "lifecycle prepare",
+      "area register",
+      "transaction preview",
+      "transaction apply",
+      "recall",
+      "snapshot save/update/list/search/load/discard",
+      "observation preview/capture/read/search/annotate/reverify/invalidate/supersede/discard",
+      "rename",
+      "discard",
+      "refresh",
+      "archive preview/read/search/discard",
+      "read",
+      "preview",
+      "apply",
+      "validate",
+      "candidate route",
+      "runtime adopt",
+      "runtime recover"
+    ],
+    "receipt": {
+      "schema": "bobbin-receipt/v1",
+      "fields": [
+        "schema",
+        "created_at",
+        "preview",
+        "receipt_digest"
+      ],
+      "selection": "agent_retained_explicit_path",
+      "ttl_seconds": 86400,
+      "receipt_digest_role": "damage_detection_only"
+    },
+    "project_configuration": {
+      "schema": "bobbin-project/v1",
+      "path": ".bobbin/config.json",
+      "approval_modes": [
+        "explicit",
+        "auto",
+        "adaptive"
+      ],
+      "default_approval_mode": "explicit",
+      "approval_sources": [
+        "user",
+        "policy"
+      ],
+      "adaptive_assessment": [
+        "record",
+        "ask"
+      ],
+      "semantic_attestations_required": true,
+      "pending_policy_binding": true
+    }
+  },
+  "capabilities": {
+    "snapshot": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-core",
+      "kind": "snapshot",
+      "artifact_schema": "context-snapshot/v1",
+      "authority": "staging",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:snapshot",
+        "operation": "claim"
+      },
+      "claim_rule": "An unfinished-session handoff is requested directly or by the user's standing project recording policy",
+      "claim_assertions": [
+        "handoff_requested",
+        "unfinished_context_present"
+      ],
+      "draft_fields": {
+        "required": {
+          "current_context": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 1200
+          },
+          "open_items": {
+            "type": "string_list",
+            "min_items": 1,
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "next_steps": {
+            "type": "string_list",
+            "min_items": 1,
+            "max_items": 8,
+            "max_item_chars": 240
+          }
+        },
+        "optional": {
+          "decided": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "refs": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 500
+          },
+          "capture_candidates": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "anchors": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          }
+        }
+      }
+    },
+    "observation": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-core",
+      "kind": "observation",
+      "artifact_schema": "context-observation/v1",
+      "authority": "evidence",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:observation",
+        "operation": "claim"
+      },
+      "claim_rule": "The finding or evidence can be reused in later investigation or judgment",
+      "claim_assertions": [
+        "reusable_observation",
+        "evidence_present"
+      ],
+      "lifecycle_operations": {
+        "same_claim": {
+          "surface": {
+            "type": "agent_skill",
+            "name": "bobbin:observation",
+            "operation": "same_claim"
+          },
+          "rule": "The successor OBS corrects or more accurately carries forward the predecessor's same observation claim",
+          "assertions": [
+            "same_semantic_claim"
+          ]
+        }
+      },
+      "draft_fields": {
+        "required": {
+          "observation": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 1200
+          },
+          "evidence": {
+            "type": "string_list",
+            "min_items": 1,
+            "max_items": 6,
+            "max_item_chars": 500
+          }
+        },
+        "optional": {
+          "impact": {
+            "type": "string",
+            "max_chars": 800
+          },
+          "current_handling": {
+            "type": "string",
+            "max_chars": 800
+          },
+          "followup_conditions": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          }
+        }
+      }
+    },
+    "archive": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-core",
+      "kind": "archive",
+      "artifact_schema": "context-archive/v1",
+      "authority": "evidence",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:archive",
+        "operation": "claim"
+      },
+      "claim_rule": "The immutable source material has been adopted as evidence for a durable context record",
+      "claim_assertions": [
+        "source_adopted_as_evidence",
+        "immutable_original_present"
+      ],
+      "lifecycle_operations": {},
+      "draft_fields": {
+        "required": {
+          "content": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 65000
+          }
+        },
+        "optional": {}
+      }
+    },
+    "decision": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-decision",
+      "kind": "decision",
+      "artifact_schema": "context-decision/v1",
+      "authority": "authoritative",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:decision",
+        "operation": "claim"
+      },
+      "comparison_surface": {
+        "type": "cli",
+        "command": "decision_cli.mjs check"
+      },
+      "batch_validation_surface": {
+        "type": "cli",
+        "command": "decision_cli.mjs batch validate"
+      },
+      "claim_rule": "An explicit choice governs present or future action and has scope plus commitment",
+      "claim_assertions": [
+        "explicit_choice",
+        "scope_identified",
+        "commitment_present"
+      ],
+      "lifecycle_operations": {
+        "same_claim": {
+          "surface": {
+            "type": "agent_skill",
+            "name": "bobbin:decision",
+            "operation": "same_claim"
+          },
+          "rule": "The new DEC carries forward the decision-like fallback OBS primary claim with the same meaning",
+          "assertions": [
+            "same_semantic_claim"
+          ]
+        }
+      },
+      "draft_fields": {
+        "required": {
+          "decision": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 1200
+          },
+          "rationale": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 1200
+          },
+          "rejected_alternatives": {
+            "type": "string_list",
+            "min_items": 1,
+            "max_items": 8,
+            "max_item_chars": 500
+          },
+          "decision_key": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 80
+          }
+        },
+        "optional": {
+          "constraints": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "tradeoffs": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "revisit_when": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 240
+          },
+          "revisit_on": {
+            "type": "date"
+          },
+          "serves_intents": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          },
+          "informed_by_observations": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          },
+          "informed_by_assumptions": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          },
+          "affects_documents": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          }
+        }
+      }
+    },
+    "assumption": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-assumption",
+      "kind": "assumption",
+      "artifact_schema": "context-assumption/v1",
+      "authority": "provisional",
+      "descriptor_digest": "sha256:3704c64254722360f3c0b1ba6eb82caad0e63a55b575825784c6f94d61930373",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:assumption",
+        "operation": "claim"
+      },
+      "claim_rule": "An explicitly unverified, project-scoped premise can change later judgment",
+      "claim_assertions": [
+        "assumption_present",
+        "unverified_ok"
+      ],
+      "lifecycle_operations": {
+        "same_claim": {
+          "surface": {
+            "type": "agent_skill",
+            "name": "bobbin:assumption",
+            "operation": "same_claim"
+          },
+          "rule": "Both actual Assumption bodies express the same primary claim",
+          "assertions": [
+            "same_semantic_claim"
+          ]
+        }
+      },
+      "draft_fields": {
+        "required": {
+          "assumption": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 1200
+          },
+          "basis": {
+            "type": "string_list",
+            "min_items": 1,
+            "max_items": 4,
+            "max_item_chars": 500
+          }
+        },
+        "optional": {
+          "impacted_decisions": {
+            "type": "string_list",
+            "format": "context_id",
+            "max_items": 12,
+            "max_item_chars": 36
+          },
+          "confirm_conditions": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 300
+          },
+          "refute_conditions": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 300
+          }
+        }
+      }
+    },
+    "term": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-term",
+      "kind": "term",
+      "artifact_schema": "context-term/v1",
+      "authority": "authoritative",
+      "descriptor_digest": "sha256:657748488783a4f7d6816ff60d28cbe2ba9e0dd576458a20bc2b2348df6ddb47",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:term",
+        "operation": "claim"
+      },
+      "claim_rule": "Claim only a term with an explicit project-specific or project-special meaning and definition",
+      "claim_assertions": [
+        "term_identified",
+        "definition_present"
+      ],
+      "lifecycle_operations": {
+        "same_claim": {
+          "surface": {
+            "type": "agent_skill",
+            "name": "bobbin:term",
+            "operation": "same_claim"
+          },
+          "rule": "Both actual term and Definition bodies express the same project terminology claim",
+          "assertions": [
+            "same_semantic_claim"
+          ]
+        }
+      },
+      "draft_fields": {
+        "required": {
+          "term": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 120
+          },
+          "definition": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 2000
+          }
+        },
+        "optional": {
+          "aliases": {
+            "type": "string_list",
+            "max_items": 12,
+            "max_item_chars": 120
+          },
+          "deprecated_terms": {
+            "type": "string_list",
+            "max_items": 12,
+            "max_item_chars": 120
+          },
+          "related": {
+            "type": "string_list",
+            "max_items": 12,
+            "max_item_chars": 120
+          }
+        }
+      }
+    },
+    "intent": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-intent",
+      "kind": "intent",
+      "artifact_schema": "context-intent/v1",
+      "authority": "authoritative",
+      "descriptor_digest": "sha256:3c33f21470839ef9137daeaf0e0825a727a7ad6ce97122e236b81006ef93ee85",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:intent",
+        "operation": "claim"
+      },
+      "claim_rule": "A desired project direction can guide one or more later decisions",
+      "claim_assertions": [
+        "intent_present",
+        "desired_direction"
+      ],
+      "lifecycle_operations": {
+        "same_claim": {
+          "surface": {
+            "type": "agent_skill",
+            "name": "bobbin:intent",
+            "operation": "same_claim"
+          },
+          "rule": "The successor intentionally carries forward the predecessor's desired direction",
+          "assertions": [
+            "same_semantic_claim"
+          ]
+        }
+      },
+      "draft_fields": {
+        "required": {
+          "intent": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 2000
+          },
+          "intent_key": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 80
+          }
+        },
+        "optional": {
+          "success_criteria": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 500
+          },
+          "constraints": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 500
+          },
+          "revisit_conditions": {
+            "type": "string_list",
+            "max_items": 8,
+            "max_item_chars": 500
+          }
+        }
+      }
+    },
+    "document": {
+      "schema": "context-owner-capability/v1",
+      "owner": "context-document",
+      "kind": "document",
+      "artifact_schema": "context-document/v1",
+      "authority": "authoritative",
+      "descriptor_digest": "sha256:16fcbe076b7d239d0f236940428f6371c191106b9b3bf3bcd5af73346fce325e",
+      "claim_surface": {
+        "type": "agent_skill",
+        "name": "bobbin:document",
+        "operation": "claim"
+      },
+      "claim_rule": "A current-state statement consumed by an agent or person through recall/envelopes has a stable authoritative slot and substantive content; external deliverable documents remain repository-owned and out of scope",
+      "claim_assertions": [
+        "content_present",
+        "living_document"
+      ],
+      "lifecycle_operations": {},
+      "draft_fields": {
+        "required": {
+          "document_key": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 80
+          },
+          "content": {
+            "type": "string",
+            "min_chars": 1,
+            "max_chars": 6000
+          }
+        },
+        "optional": {}
+      }
+    }
+  },
+  "owners": {
+    "decision": {
+      "descriptor": {
+        "schema": "context-owner-descriptor/v1",
+        "owner": "context-decision",
+        "kind": "decision",
+        "artifact_schema": "context-decision/v1",
+        "authority": "authoritative"
+      },
+      "index_seed": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"decision\"\nowner: \"context-decision\"\nartifact_schema: \"context-decision/v1\"\nauthority: \"authoritative\"\nsummary: \"Manage decisions, rationale, rejected alternatives, and current validity.\"\nsearch_terms: [\"decision\",\"rationale\",\"rejected alternative\"]\nprojection_fields: [\"scope\",\"decision_key\",\"revisit_on\"]\n---\n\n# Decision\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+      "capability": {
+        "schema": "context-owner-capability/v1",
+        "owner": "context-decision",
+        "kind": "decision",
+        "artifact_schema": "context-decision/v1",
+        "authority": "authoritative",
+        "claim_surface": {
+          "type": "agent_skill",
+          "name": "bobbin:decision",
+          "operation": "claim"
+        },
+        "comparison_surface": {
+          "type": "cli",
+          "command": "decision_cli.mjs check"
+        },
+        "batch_validation_surface": {
+          "type": "cli",
+          "command": "decision_cli.mjs batch validate"
+        },
+        "claim_rule": "An explicit choice governs present or future action and has scope plus commitment",
+        "claim_assertions": [
+          "explicit_choice",
+          "scope_identified",
+          "commitment_present"
+        ],
+        "lifecycle_operations": {
+          "same_claim": {
+            "surface": {
+              "type": "agent_skill",
+              "name": "bobbin:decision",
+              "operation": "same_claim"
+            },
+            "rule": "The new DEC carries forward the decision-like fallback OBS primary claim with the same meaning",
+            "assertions": [
+              "same_semantic_claim"
+            ]
+          }
+        },
+        "draft_fields": {
+          "required": {
+            "decision": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 1200
+            },
+            "rationale": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 1200
+            },
+            "rejected_alternatives": {
+              "type": "string_list",
+              "min_items": 1,
+              "max_items": 8,
+              "max_item_chars": 500
+            },
+            "decision_key": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 80
+            }
+          },
+          "optional": {
+            "constraints": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 240
+            },
+            "tradeoffs": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 240
+            },
+            "revisit_when": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 240
+            },
+            "revisit_on": {
+              "type": "date"
+            },
+            "serves_intents": {
+              "type": "string_list",
+              "format": "context_id",
+              "max_items": 12,
+              "max_item_chars": 36
+            },
+            "informed_by_observations": {
+              "type": "string_list",
+              "format": "context_id",
+              "max_items": 12,
+              "max_item_chars": 36
+            },
+            "informed_by_assumptions": {
+              "type": "string_list",
+              "format": "context_id",
+              "max_items": 12,
+              "max_item_chars": 36
+            },
+            "affects_documents": {
+              "type": "string_list",
+              "format": "context_id",
+              "max_items": 12,
+              "max_item_chars": 36
+            }
+          }
+        }
+      },
+      "schema": {
+        "schema": "context-decision-schema/v1",
+        "protocol": "context-common/v2",
+        "owner": "context-decision",
+        "artifact_schema": "context-decision/v1",
+        "physical_write": false,
+        "required_plugin": {
+          "marketplace": "bobbin",
+          "plugin": "bobbin",
+          "selector": "bobbin@bobbin",
+          "source": "Jeis-Jw/bobbin",
+          "provider": "Jinwuk-Lee (Jeis-Jw)",
+          "required_protocol": "context-common/v2",
+          "entrypoint": "skills/context/scripts/context_cli.mjs",
+          "compatible_major": 1
+        },
+        "core_sections": [
+          "Decision",
+          "Rationale",
+          "Rejected alternatives"
+        ],
+        "commands": [
+          "init",
+          "schema",
+          "capabilities",
+          "candidate prepare",
+          "check",
+          "draft",
+          "capture",
+          "search",
+          "read",
+          "brief",
+          "spec-view",
+          "conflicts",
+          "supersede",
+          "import-fallback",
+          "withdraw",
+          "annotate",
+          "revisit",
+          "batch validate",
+          "plan validate"
+        ],
+        "workflow_surface": {
+          "entrypoint": "decision_workflow.mjs",
+          "commands": [
+            "preview",
+            "apply",
+            "reject",
+            "record"
+          ],
+          "record": "preview_then_unchanged_apply_in_one_process_after_caller_attested_semantic_approval",
+          "core_cli": "same_package_only",
+          "preview_input_modes": [
+            "inline",
+            "files"
+          ],
+          "operations": [
+            "capture",
+            "supersede",
+            "withdraw"
+          ],
+          "inline_assertions": [
+            "explicit_choice",
+            "scope_identified",
+            "commitment_present"
+          ],
+          "receipt_schema": "bobbin-receipt/v1",
+          "receipt_contract": {
+            "schema": "bobbin-receipt/v1",
+            "fields": [
+              "schema",
+              "created_at",
+              "preview",
+              "receipt_digest"
+            ],
+            "selection": "agent_retained_explicit_path",
+            "ttl_seconds": 86400,
+            "receipt_digest_role": "damage_detection_only"
+          }
+        },
+        "runtime": {
+          "language": "typescript",
+          "node": ">=20.20.0",
+          "entrypoint": "skills/decision/scripts/decision_cli.mjs",
+          "core": "same_package_library",
+          "external_core_substitution": false
+        }
+      },
+      "relation_actions": {
+        "new": "Explicit choice only; use shared recording policy (explicit/auto/adaptive); no second storage ask.",
+        "same": "Reuse silently; cite if needed; no duplicate DEC.",
+        "supporting": "If the evidence is durable, consider OBS without changing the decision.",
+        "rationale_changed": "Quote every returned non-empty actual section; hold action and ask both choices: keep = not performed; supersede only after explicit choice.",
+        "conflict": "Quote every returned non-empty actual section, including Revisit conditions; classify revisit only from user-supplied present facts, never the requested conflicting action; hold and ask both choices: keep = not performed; supersede only after explicit choice. Revisit permits reassessment, not implementation."
+      }
+    },
+    "assumption": {
+      "descriptor": {
+        "schema": "context-owner-descriptor/v2",
+        "owner": "context-assumption",
+        "kind": "assumption",
+        "artifact_schema": "context-assumption/v1",
+        "authority": "provisional",
+        "structural_profile": {
+          "schema": "context-structural-profile/v1",
+          "fields": {
+            "scope": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 160
+            },
+            "impacted_decisions": {
+              "type": "context_id_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12
+            },
+            "retired_at": {
+              "type": "timestamp",
+              "required": false
+            },
+            "retired_reason": {
+              "type": "enum",
+              "required": false,
+              "values": [
+                "confirmed",
+                "refuted",
+                "superseded"
+              ]
+            },
+            "evidence_refs": {
+              "type": "string_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12,
+              "max_item_chars": 500
+            },
+            "refutation_reason": {
+              "type": "string",
+              "required": false,
+              "min_chars": 1,
+              "max_chars": 800
+            },
+            "superseded_by": {
+              "type": "context_id",
+              "required": false
+            },
+            "supersedes": {
+              "type": "context_id_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12
+            }
+          },
+          "sections": {
+            "ordered": [
+              "가정",
+              "근거",
+              "확정 조건",
+              "반증 조건"
+            ],
+            "required": [
+              "가정",
+              "근거"
+            ],
+            "primary": "가정"
+          },
+          "index_projection": [
+            "scope"
+          ],
+          "lifecycle": {
+            "allowed_topologies": [
+              "create_current",
+              "replace_same_state",
+              "retire_current",
+              "supersede_current"
+            ],
+            "reasons": {
+              "confirmed": {
+                "topology": "retire_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "evidence_refs"
+                ],
+                "forbidden_fields": [
+                  "superseded_by",
+                  "refutation_reason"
+                ],
+                "successor": "forbidden",
+                "references": []
+              },
+              "refuted": {
+                "topology": "retire_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "evidence_refs",
+                  "refutation_reason",
+                  "impacted_decisions"
+                ],
+                "forbidden_fields": [
+                  "superseded_by"
+                ],
+                "successor": "forbidden",
+                "references": []
+              },
+              "superseded": {
+                "topology": "supersede_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "superseded_by"
+                ],
+                "forbidden_fields": [
+                  "evidence_refs",
+                  "refutation_reason"
+                ],
+                "successor": "required",
+                "references": [
+                  {
+                    "location": "predecessor",
+                    "field": "superseded_by",
+                    "target": "successor",
+                    "match": "equals"
+                  },
+                  {
+                    "location": "successor",
+                    "field": "supersedes",
+                    "target": "predecessor",
+                    "match": "contains"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "index_seed": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"assumption\"\nowner: \"context-assumption\"\nartifact_schema: \"context-assumption/v1\"\nauthority: \"provisional\"\nsummary: \"Manage unverified project-scoped premises and their validation conditions.\"\nsearch_terms: [\"assumption\",\"premise\",\"validation\"]\nprojection_fields: [\"scope\"]\n---\n\n<!-- BEGIN CONTEXT GENERATED:owner-profile -->\n{\"artifact_schema\":\"context-assumption/v1\",\"authority\":\"provisional\",\"kind\":\"assumption\",\"owner\":\"context-assumption\",\"schema\":\"context-owner-descriptor/v2\",\"structural_profile\":{\"fields\":{\"evidence_refs\":{\"max_item_chars\":500,\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"string_list\"},\"impacted_decisions\":{\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"context_id_list\"},\"refutation_reason\":{\"max_chars\":800,\"min_chars\":1,\"required\":false,\"type\":\"string\"},\"retired_at\":{\"required\":false,\"type\":\"timestamp\"},\"retired_reason\":{\"required\":false,\"type\":\"enum\",\"values\":[\"confirmed\",\"refuted\",\"superseded\"]},\"scope\":{\"max_chars\":160,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"superseded_by\":{\"required\":false,\"type\":\"context_id\"},\"supersedes\":{\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"context_id_list\"}},\"index_projection\":[\"scope\"],\"lifecycle\":{\"allowed_topologies\":[\"create_current\",\"replace_same_state\",\"retire_current\",\"supersede_current\"],\"reasons\":{\"confirmed\":{\"forbidden_fields\":[\"superseded_by\",\"refutation_reason\"],\"references\":[],\"required_fields\":[\"retired_at\",\"retired_reason\",\"evidence_refs\"],\"successor\":\"forbidden\",\"topology\":\"retire_current\"},\"refuted\":{\"forbidden_fields\":[\"superseded_by\"],\"references\":[],\"required_fields\":[\"retired_at\",\"retired_reason\",\"evidence_refs\",\"refutation_reason\",\"impacted_decisions\"],\"successor\":\"forbidden\",\"topology\":\"retire_current\"},\"superseded\":{\"forbidden_fields\":[\"evidence_refs\",\"refutation_reason\"],\"references\":[{\"field\":\"superseded_by\",\"location\":\"predecessor\",\"match\":\"equals\",\"target\":\"successor\"},{\"field\":\"supersedes\",\"location\":\"successor\",\"match\":\"contains\",\"target\":\"predecessor\"}],\"required_fields\":[\"retired_at\",\"retired_reason\",\"superseded_by\"],\"successor\":\"required\",\"topology\":\"supersede_current\"}}},\"schema\":\"context-structural-profile/v1\",\"sections\":{\"ordered\":[\"가정\",\"근거\",\"확정 조건\",\"반증 조건\"],\"primary\":\"가정\",\"required\":[\"가정\",\"근거\"]}}}\n<!-- END CONTEXT GENERATED:owner-profile -->\n\n# Assumption\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+      "capability": {
+        "schema": "context-owner-capability/v1",
+        "owner": "context-assumption",
+        "kind": "assumption",
+        "artifact_schema": "context-assumption/v1",
+        "authority": "provisional",
+        "descriptor_digest": "sha256:3704c64254722360f3c0b1ba6eb82caad0e63a55b575825784c6f94d61930373",
+        "claim_surface": {
+          "type": "agent_skill",
+          "name": "bobbin:assumption",
+          "operation": "claim"
+        },
+        "claim_rule": "An explicitly unverified, project-scoped premise can change later judgment",
+        "claim_assertions": [
+          "assumption_present",
+          "unverified_ok"
+        ],
+        "lifecycle_operations": {
+          "same_claim": {
+            "surface": {
+              "type": "agent_skill",
+              "name": "bobbin:assumption",
+              "operation": "same_claim"
+            },
+            "rule": "Both actual Assumption bodies express the same primary claim",
+            "assertions": [
+              "same_semantic_claim"
+            ]
+          }
+        },
+        "draft_fields": {
+          "required": {
+            "assumption": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 1200
+            },
+            "basis": {
+              "type": "string_list",
+              "min_items": 1,
+              "max_items": 4,
+              "max_item_chars": 500
+            }
+          },
+          "optional": {
+            "impacted_decisions": {
+              "type": "string_list",
+              "format": "context_id",
+              "max_items": 12,
+              "max_item_chars": 36
+            },
+            "confirm_conditions": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 300
+            },
+            "refute_conditions": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 300
+            }
+          }
+        }
+      },
+      "schema": {
+        "schema": "context-assumption-schema/v1",
+        "protocol": "context-common/v2",
+        "artifact_schema": "context-assumption/v1",
+        "authority": "provisional",
+        "owner_descriptor": {
+          "schema": "context-owner-descriptor/v2",
+          "owner": "context-assumption",
+          "kind": "assumption",
+          "artifact_schema": "context-assumption/v1",
+          "authority": "provisional",
+          "structural_profile": {
+            "schema": "context-structural-profile/v1",
+            "fields": {
+              "scope": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 160
+              },
+              "impacted_decisions": {
+                "type": "context_id_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12
+              },
+              "retired_at": {
+                "type": "timestamp",
+                "required": false
+              },
+              "retired_reason": {
+                "type": "enum",
+                "required": false,
+                "values": [
+                  "confirmed",
+                  "refuted",
+                  "superseded"
+                ]
+              },
+              "evidence_refs": {
+                "type": "string_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12,
+                "max_item_chars": 500
+              },
+              "refutation_reason": {
+                "type": "string",
+                "required": false,
+                "min_chars": 1,
+                "max_chars": 800
+              },
+              "superseded_by": {
+                "type": "context_id",
+                "required": false
+              },
+              "supersedes": {
+                "type": "context_id_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12
+              }
+            },
+            "sections": {
+              "ordered": [
+                "가정",
+                "근거",
+                "확정 조건",
+                "반증 조건"
+              ],
+              "required": [
+                "가정",
+                "근거"
+              ],
+              "primary": "가정"
+            },
+            "index_projection": [
+              "scope"
+            ],
+            "lifecycle": {
+              "allowed_topologies": [
+                "create_current",
+                "replace_same_state",
+                "retire_current",
+                "supersede_current"
+              ],
+              "reasons": {
+                "confirmed": {
+                  "topology": "retire_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "evidence_refs"
+                  ],
+                  "forbidden_fields": [
+                    "superseded_by",
+                    "refutation_reason"
+                  ],
+                  "successor": "forbidden",
+                  "references": []
+                },
+                "refuted": {
+                  "topology": "retire_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "evidence_refs",
+                    "refutation_reason",
+                    "impacted_decisions"
+                  ],
+                  "forbidden_fields": [
+                    "superseded_by"
+                  ],
+                  "successor": "forbidden",
+                  "references": []
+                },
+                "superseded": {
+                  "topology": "supersede_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "superseded_by"
+                  ],
+                  "forbidden_fields": [
+                    "evidence_refs",
+                    "refutation_reason"
+                  ],
+                  "successor": "required",
+                  "references": [
+                    {
+                      "location": "predecessor",
+                      "field": "superseded_by",
+                      "target": "successor",
+                      "match": "equals"
+                    },
+                    {
+                      "location": "successor",
+                      "field": "supersedes",
+                      "target": "predecessor",
+                      "match": "contains"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "features": [
+          "context-owner-descriptor/v2",
+          "exact-rfc6901-claim-binding",
+          "signal-gated-read"
+        ],
+        "workflow_surface": {
+          "entrypoint": "assumption_workflow.mjs",
+          "commands": [
+            "preview",
+            "apply"
+          ],
+          "preview_input_modes": [
+            "inline"
+          ],
+          "preflight": "derived_from_verified_core_manifests_and_doctor",
+          "preview_state": "awaiting_approval",
+          "core_cli": "same_package_only",
+          "receipt_schema": "bobbin-receipt/v1",
+          "receipt_contract": {
+            "schema": "bobbin-receipt/v1",
+            "fields": [
+              "schema",
+              "created_at",
+              "preview",
+              "receipt_digest"
+            ],
+            "selection": "agent_retained_explicit_path",
+            "ttl_seconds": 86400,
+            "receipt_digest_role": "damage_detection_only"
+          }
+        },
+        "physical_write": false,
+        "runtime": {
+          "language": "typescript",
+          "node": ">=20.20.0",
+          "entrypoint": "skills/assumption/scripts/assumption_cli.mjs",
+          "core": "same_package_library",
+          "external_core_substitution": false
+        }
+      }
+    },
+    "term": {
+      "descriptor": {
+        "schema": "context-owner-descriptor/v2",
+        "owner": "context-term",
+        "kind": "term",
+        "artifact_schema": "context-term/v1",
+        "authority": "authoritative",
+        "structural_profile": {
+          "schema": "context-structural-profile/v1",
+          "fields": {
+            "scope": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 160
+            },
+            "term": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 120
+            },
+            "term_key": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 80
+            },
+            "aliases": {
+              "type": "string_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12,
+              "max_item_chars": 120
+            },
+            "deprecated_terms": {
+              "type": "string_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12,
+              "max_item_chars": 120
+            },
+            "related": {
+              "type": "string_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12,
+              "max_item_chars": 120
+            },
+            "retired_at": {
+              "type": "timestamp",
+              "required": false
+            },
+            "retired_reason": {
+              "type": "enum",
+              "required": false,
+              "values": [
+                "deprecated",
+                "superseded"
+              ]
+            },
+            "deprecation_reason": {
+              "type": "string",
+              "required": false,
+              "min_chars": 1,
+              "max_chars": 800
+            },
+            "replacement_term": {
+              "type": "string",
+              "required": false,
+              "min_chars": 1,
+              "max_chars": 120
+            },
+            "superseded_by": {
+              "type": "context_id",
+              "required": false
+            },
+            "supersedes": {
+              "type": "context_id_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12
+            }
+          },
+          "sections": {
+            "ordered": [
+              "정의"
+            ],
+            "required": [
+              "정의"
+            ],
+            "primary": "정의"
+          },
+          "index_projection": [
+            "scope",
+            "term_key",
+            "term"
+          ],
+          "lifecycle": {
+            "allowed_topologies": [
+              "create_current",
+              "replace_same_state",
+              "retire_current",
+              "supersede_current"
+            ],
+            "reasons": {
+              "deprecated": {
+                "topology": "retire_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "deprecation_reason"
+                ],
+                "forbidden_fields": [
+                  "superseded_by"
+                ],
+                "successor": "forbidden",
+                "references": []
+              },
+              "superseded": {
+                "topology": "supersede_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "superseded_by"
+                ],
+                "forbidden_fields": [
+                  "deprecation_reason",
+                  "replacement_term"
+                ],
+                "successor": "required",
+                "references": [
+                  {
+                    "location": "predecessor",
+                    "field": "superseded_by",
+                    "target": "successor",
+                    "match": "equals"
+                  },
+                  {
+                    "location": "successor",
+                    "field": "supersedes",
+                    "target": "predecessor",
+                    "match": "contains"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "index_seed": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"term\"\nowner: \"context-term\"\nartifact_schema: \"context-term/v1\"\nauthority: \"authoritative\"\nsummary: \"Manage project-specific terms and their canonical definitions.\"\nsearch_terms: [\"term\",\"terminology\",\"definition\"]\nprojection_fields: [\"scope\",\"term_key\",\"term\"]\n---\n\n<!-- BEGIN CONTEXT GENERATED:owner-profile -->\n{\"artifact_schema\":\"context-term/v1\",\"authority\":\"authoritative\",\"kind\":\"term\",\"owner\":\"context-term\",\"schema\":\"context-owner-descriptor/v2\",\"structural_profile\":{\"fields\":{\"aliases\":{\"max_item_chars\":120,\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"string_list\"},\"deprecated_terms\":{\"max_item_chars\":120,\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"string_list\"},\"deprecation_reason\":{\"max_chars\":800,\"min_chars\":1,\"required\":false,\"type\":\"string\"},\"related\":{\"max_item_chars\":120,\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"string_list\"},\"replacement_term\":{\"max_chars\":120,\"min_chars\":1,\"required\":false,\"type\":\"string\"},\"retired_at\":{\"required\":false,\"type\":\"timestamp\"},\"retired_reason\":{\"required\":false,\"type\":\"enum\",\"values\":[\"deprecated\",\"superseded\"]},\"scope\":{\"max_chars\":160,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"superseded_by\":{\"required\":false,\"type\":\"context_id\"},\"supersedes\":{\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"context_id_list\"},\"term\":{\"max_chars\":120,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"term_key\":{\"max_chars\":80,\"min_chars\":1,\"required\":true,\"type\":\"string\"}},\"index_projection\":[\"scope\",\"term_key\",\"term\"],\"lifecycle\":{\"allowed_topologies\":[\"create_current\",\"replace_same_state\",\"retire_current\",\"supersede_current\"],\"reasons\":{\"deprecated\":{\"forbidden_fields\":[\"superseded_by\"],\"references\":[],\"required_fields\":[\"retired_at\",\"retired_reason\",\"deprecation_reason\"],\"successor\":\"forbidden\",\"topology\":\"retire_current\"},\"superseded\":{\"forbidden_fields\":[\"deprecation_reason\",\"replacement_term\"],\"references\":[{\"field\":\"superseded_by\",\"location\":\"predecessor\",\"match\":\"equals\",\"target\":\"successor\"},{\"field\":\"supersedes\",\"location\":\"successor\",\"match\":\"contains\",\"target\":\"predecessor\"}],\"required_fields\":[\"retired_at\",\"retired_reason\",\"superseded_by\"],\"successor\":\"required\",\"topology\":\"supersede_current\"}}},\"schema\":\"context-structural-profile/v1\",\"sections\":{\"ordered\":[\"정의\"],\"primary\":\"정의\",\"required\":[\"정의\"]}}}\n<!-- END CONTEXT GENERATED:owner-profile -->\n\n# Term\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+      "capability": {
+        "schema": "context-owner-capability/v1",
+        "owner": "context-term",
+        "kind": "term",
+        "artifact_schema": "context-term/v1",
+        "authority": "authoritative",
+        "descriptor_digest": "sha256:657748488783a4f7d6816ff60d28cbe2ba9e0dd576458a20bc2b2348df6ddb47",
+        "claim_surface": {
+          "type": "agent_skill",
+          "name": "bobbin:term",
+          "operation": "claim"
+        },
+        "claim_rule": "Claim only a term with an explicit project-specific or project-special meaning and definition",
+        "claim_assertions": [
+          "term_identified",
+          "definition_present"
+        ],
+        "lifecycle_operations": {
+          "same_claim": {
+            "surface": {
+              "type": "agent_skill",
+              "name": "bobbin:term",
+              "operation": "same_claim"
+            },
+            "rule": "Both actual term and Definition bodies express the same project terminology claim",
+            "assertions": [
+              "same_semantic_claim"
+            ]
+          }
+        },
+        "draft_fields": {
+          "required": {
+            "term": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 120
+            },
+            "definition": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 2000
+            }
+          },
+          "optional": {
+            "aliases": {
+              "type": "string_list",
+              "max_items": 12,
+              "max_item_chars": 120
+            },
+            "deprecated_terms": {
+              "type": "string_list",
+              "max_items": 12,
+              "max_item_chars": 120
+            },
+            "related": {
+              "type": "string_list",
+              "max_items": 12,
+              "max_item_chars": 120
+            }
+          }
+        }
+      },
+      "schema": {
+        "schema": "context-term-schema/v1",
+        "protocol": "context-common/v2",
+        "artifact_schema": "context-term/v1",
+        "authority": "authoritative",
+        "owner_descriptor": {
+          "schema": "context-owner-descriptor/v2",
+          "owner": "context-term",
+          "kind": "term",
+          "artifact_schema": "context-term/v1",
+          "authority": "authoritative",
+          "structural_profile": {
+            "schema": "context-structural-profile/v1",
+            "fields": {
+              "scope": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 160
+              },
+              "term": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 120
+              },
+              "term_key": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 80
+              },
+              "aliases": {
+                "type": "string_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12,
+                "max_item_chars": 120
+              },
+              "deprecated_terms": {
+                "type": "string_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12,
+                "max_item_chars": 120
+              },
+              "related": {
+                "type": "string_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12,
+                "max_item_chars": 120
+              },
+              "retired_at": {
+                "type": "timestamp",
+                "required": false
+              },
+              "retired_reason": {
+                "type": "enum",
+                "required": false,
+                "values": [
+                  "deprecated",
+                  "superseded"
+                ]
+              },
+              "deprecation_reason": {
+                "type": "string",
+                "required": false,
+                "min_chars": 1,
+                "max_chars": 800
+              },
+              "replacement_term": {
+                "type": "string",
+                "required": false,
+                "min_chars": 1,
+                "max_chars": 120
+              },
+              "superseded_by": {
+                "type": "context_id",
+                "required": false
+              },
+              "supersedes": {
+                "type": "context_id_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12
+              }
+            },
+            "sections": {
+              "ordered": [
+                "정의"
+              ],
+              "required": [
+                "정의"
+              ],
+              "primary": "정의"
+            },
+            "index_projection": [
+              "scope",
+              "term_key",
+              "term"
+            ],
+            "lifecycle": {
+              "allowed_topologies": [
+                "create_current",
+                "replace_same_state",
+                "retire_current",
+                "supersede_current"
+              ],
+              "reasons": {
+                "deprecated": {
+                  "topology": "retire_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "deprecation_reason"
+                  ],
+                  "forbidden_fields": [
+                    "superseded_by"
+                  ],
+                  "successor": "forbidden",
+                  "references": []
+                },
+                "superseded": {
+                  "topology": "supersede_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "superseded_by"
+                  ],
+                  "forbidden_fields": [
+                    "deprecation_reason",
+                    "replacement_term"
+                  ],
+                  "successor": "required",
+                  "references": [
+                    {
+                      "location": "predecessor",
+                      "field": "superseded_by",
+                      "target": "successor",
+                      "match": "equals"
+                    },
+                    {
+                      "location": "successor",
+                      "field": "supersedes",
+                      "target": "predecessor",
+                      "match": "contains"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "features": [
+          "context-owner-descriptor/v2",
+          "exact-rfc6901-claim-binding",
+          "project-term-gate",
+          "scope-term-key-slot",
+          "signal-gated-read"
+        ],
+        "workflow_surface": {
+          "entrypoint": "term_workflow.mjs",
+          "commands": [
+            "preview",
+            "apply"
+          ],
+          "preview_input_modes": [
+            "inline"
+          ],
+          "preflight": "derived_from_verified_core_manifests_and_doctor",
+          "preview_state": "awaiting_approval",
+          "core_cli": "same_package_only",
+          "receipt_schema": "bobbin-receipt/v1",
+          "receipt_contract": {
+            "schema": "bobbin-receipt/v1",
+            "fields": [
+              "schema",
+              "created_at",
+              "preview",
+              "receipt_digest"
+            ],
+            "selection": "agent_retained_explicit_path",
+            "ttl_seconds": 86400,
+            "receipt_digest_role": "damage_detection_only"
+          }
+        },
+        "physical_write": false,
+        "runtime": {
+          "language": "typescript",
+          "node": ">=20.20.0",
+          "entrypoint": "skills/term/scripts/term_cli.mjs",
+          "core": "same_package_library",
+          "external_core_substitution": false
+        }
+      }
+    },
+    "intent": {
+      "descriptor": {
+        "schema": "context-owner-descriptor/v2",
+        "owner": "context-intent",
+        "kind": "intent",
+        "artifact_schema": "context-intent/v1",
+        "authority": "authoritative",
+        "structural_profile": {
+          "schema": "context-structural-profile/v1",
+          "fields": {
+            "scope": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 160
+            },
+            "intent_key": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 80
+            },
+            "retired_at": {
+              "type": "timestamp",
+              "required": false
+            },
+            "retired_reason": {
+              "type": "enum",
+              "required": false,
+              "values": [
+                "superseded"
+              ]
+            },
+            "superseded_by": {
+              "type": "context_id",
+              "required": false
+            },
+            "supersedes": {
+              "type": "context_id_list",
+              "required": false,
+              "min_items": 0,
+              "max_items": 12
+            }
+          },
+          "sections": {
+            "ordered": [
+              "Intent",
+              "Success criteria",
+              "Constraints",
+              "Revisit conditions"
+            ],
+            "required": [
+              "Intent"
+            ],
+            "primary": "Intent"
+          },
+          "index_projection": [
+            "scope",
+            "intent_key"
+          ],
+          "lifecycle": {
+            "allowed_topologies": [
+              "create_current",
+              "supersede_current"
+            ],
+            "reasons": {
+              "superseded": {
+                "topology": "supersede_current",
+                "required_fields": [
+                  "retired_at",
+                  "retired_reason",
+                  "superseded_by"
+                ],
+                "forbidden_fields": [],
+                "successor": "required",
+                "references": [
+                  {
+                    "location": "predecessor",
+                    "field": "superseded_by",
+                    "target": "successor",
+                    "match": "equals"
+                  },
+                  {
+                    "location": "successor",
+                    "field": "supersedes",
+                    "target": "predecessor",
+                    "match": "contains"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "index_seed": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"intent\"\nowner: \"context-intent\"\nartifact_schema: \"context-intent/v1\"\nauthority: \"authoritative\"\nsummary: \"Desired project directions that can guide later decisions.\"\nsearch_terms: [\"intent\",\"direction\",\"purpose\"]\nprojection_fields: [\"scope\",\"intent_key\"]\n---\n\n<!-- BEGIN CONTEXT GENERATED:owner-profile -->\n{\"artifact_schema\":\"context-intent/v1\",\"authority\":\"authoritative\",\"kind\":\"intent\",\"owner\":\"context-intent\",\"schema\":\"context-owner-descriptor/v2\",\"structural_profile\":{\"fields\":{\"intent_key\":{\"max_chars\":80,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"retired_at\":{\"required\":false,\"type\":\"timestamp\"},\"retired_reason\":{\"required\":false,\"type\":\"enum\",\"values\":[\"superseded\"]},\"scope\":{\"max_chars\":160,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"superseded_by\":{\"required\":false,\"type\":\"context_id\"},\"supersedes\":{\"max_items\":12,\"min_items\":0,\"required\":false,\"type\":\"context_id_list\"}},\"index_projection\":[\"scope\",\"intent_key\"],\"lifecycle\":{\"allowed_topologies\":[\"create_current\",\"supersede_current\"],\"reasons\":{\"superseded\":{\"forbidden_fields\":[],\"references\":[{\"field\":\"superseded_by\",\"location\":\"predecessor\",\"match\":\"equals\",\"target\":\"successor\"},{\"field\":\"supersedes\",\"location\":\"successor\",\"match\":\"contains\",\"target\":\"predecessor\"}],\"required_fields\":[\"retired_at\",\"retired_reason\",\"superseded_by\"],\"successor\":\"required\",\"topology\":\"supersede_current\"}}},\"schema\":\"context-structural-profile/v1\",\"sections\":{\"ordered\":[\"Intent\",\"Success criteria\",\"Constraints\",\"Revisit conditions\"],\"primary\":\"Intent\",\"required\":[\"Intent\"]}}}\n<!-- END CONTEXT GENERATED:owner-profile -->\n\n# Intent\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+      "capability": {
+        "schema": "context-owner-capability/v1",
+        "owner": "context-intent",
+        "kind": "intent",
+        "artifact_schema": "context-intent/v1",
+        "authority": "authoritative",
+        "descriptor_digest": "sha256:3c33f21470839ef9137daeaf0e0825a727a7ad6ce97122e236b81006ef93ee85",
+        "claim_surface": {
+          "type": "agent_skill",
+          "name": "bobbin:intent",
+          "operation": "claim"
+        },
+        "claim_rule": "A desired project direction can guide one or more later decisions",
+        "claim_assertions": [
+          "intent_present",
+          "desired_direction"
+        ],
+        "lifecycle_operations": {
+          "same_claim": {
+            "surface": {
+              "type": "agent_skill",
+              "name": "bobbin:intent",
+              "operation": "same_claim"
+            },
+            "rule": "The successor intentionally carries forward the predecessor's desired direction",
+            "assertions": [
+              "same_semantic_claim"
+            ]
+          }
+        },
+        "draft_fields": {
+          "required": {
+            "intent": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 2000
+            },
+            "intent_key": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 80
+            }
+          },
+          "optional": {
+            "success_criteria": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 500
+            },
+            "constraints": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 500
+            },
+            "revisit_conditions": {
+              "type": "string_list",
+              "max_items": 8,
+              "max_item_chars": 500
+            }
+          }
+        }
+      },
+      "schema": {
+        "schema": "context-intent-schema/v1",
+        "protocol": "context-common/v2",
+        "artifact_schema": "context-intent/v1",
+        "authority": "authoritative",
+        "owner_descriptor": {
+          "schema": "context-owner-descriptor/v2",
+          "owner": "context-intent",
+          "kind": "intent",
+          "artifact_schema": "context-intent/v1",
+          "authority": "authoritative",
+          "structural_profile": {
+            "schema": "context-structural-profile/v1",
+            "fields": {
+              "scope": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 160
+              },
+              "intent_key": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 80
+              },
+              "retired_at": {
+                "type": "timestamp",
+                "required": false
+              },
+              "retired_reason": {
+                "type": "enum",
+                "required": false,
+                "values": [
+                  "superseded"
+                ]
+              },
+              "superseded_by": {
+                "type": "context_id",
+                "required": false
+              },
+              "supersedes": {
+                "type": "context_id_list",
+                "required": false,
+                "min_items": 0,
+                "max_items": 12
+              }
+            },
+            "sections": {
+              "ordered": [
+                "Intent",
+                "Success criteria",
+                "Constraints",
+                "Revisit conditions"
+              ],
+              "required": [
+                "Intent"
+              ],
+              "primary": "Intent"
+            },
+            "index_projection": [
+              "scope",
+              "intent_key"
+            ],
+            "lifecycle": {
+              "allowed_topologies": [
+                "create_current",
+                "supersede_current"
+              ],
+              "reasons": {
+                "superseded": {
+                  "topology": "supersede_current",
+                  "required_fields": [
+                    "retired_at",
+                    "retired_reason",
+                    "superseded_by"
+                  ],
+                  "forbidden_fields": [],
+                  "successor": "required",
+                  "references": [
+                    {
+                      "location": "predecessor",
+                      "field": "superseded_by",
+                      "target": "successor",
+                      "match": "equals"
+                    },
+                    {
+                      "location": "successor",
+                      "field": "supersedes",
+                      "target": "predecessor",
+                      "match": "contains"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "features": [
+          "context-owner-descriptor/v2",
+          "exact-rfc6901-claim-binding",
+          "scope-intent-key-slot"
+        ],
+        "workflow_surface": {
+          "entrypoint": "intent_workflow.mjs",
+          "commands": [
+            "preview",
+            "apply"
+          ],
+          "preview_input_modes": [
+            "inline"
+          ],
+          "preflight": "derived_from_verified_core_manifests_and_doctor",
+          "preview_state": "awaiting_approval",
+          "core_cli": "same_package_only",
+          "receipt_schema": "bobbin-receipt/v1",
+          "receipt_contract": {
+            "schema": "bobbin-receipt/v1",
+            "fields": [
+              "schema",
+              "created_at",
+              "preview",
+              "receipt_digest"
+            ],
+            "selection": "agent_retained_explicit_path",
+            "ttl_seconds": 86400,
+            "receipt_digest_role": "damage_detection_only"
+          }
+        },
+        "physical_write": false,
+        "runtime": {
+          "language": "typescript",
+          "node": ">=20.20.0",
+          "entrypoint": "skills/intent/scripts/intent_cli.mjs",
+          "core": "same_package_library",
+          "external_core_substitution": false
+        }
+      }
+    },
+    "document": {
+      "descriptor": {
+        "schema": "context-owner-descriptor/v2",
+        "owner": "context-document",
+        "kind": "document",
+        "artifact_schema": "context-document/v1",
+        "authority": "authoritative",
+        "structural_profile": {
+          "schema": "context-structural-profile/v1",
+          "fields": {
+            "scope": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 160
+            },
+            "document_key": {
+              "type": "string",
+              "required": true,
+              "min_chars": 1,
+              "max_chars": 80
+            }
+          },
+          "sections": {
+            "ordered": [
+              "Content"
+            ],
+            "required": [
+              "Content"
+            ],
+            "primary": "Content"
+          },
+          "index_projection": [
+            "scope",
+            "document_key"
+          ],
+          "lifecycle": {
+            "allowed_topologies": [
+              "create_current",
+              "replace_same_state"
+            ],
+            "reasons": {}
+          }
+        }
+      },
+      "index_seed": "---\nschema: \"context-area-index/v1\"\nindex: true\narea: \"document\"\nowner: \"context-document\"\nartifact_schema: \"context-document/v1\"\nauthority: \"authoritative\"\nsummary: \"Project-scoped living documents with stable authoritative slots.\"\nsearch_terms: [\"document\",\"living document\",\"content\"]\nprojection_fields: [\"scope\",\"document_key\"]\n---\n\n<!-- BEGIN CONTEXT GENERATED:owner-profile -->\n{\"artifact_schema\":\"context-document/v1\",\"authority\":\"authoritative\",\"kind\":\"document\",\"owner\":\"context-document\",\"schema\":\"context-owner-descriptor/v2\",\"structural_profile\":{\"fields\":{\"document_key\":{\"max_chars\":80,\"min_chars\":1,\"required\":true,\"type\":\"string\"},\"scope\":{\"max_chars\":160,\"min_chars\":1,\"required\":true,\"type\":\"string\"}},\"index_projection\":[\"scope\",\"document_key\"],\"lifecycle\":{\"allowed_topologies\":[\"create_current\",\"replace_same_state\"],\"reasons\":{}},\"schema\":\"context-structural-profile/v1\",\"sections\":{\"ordered\":[\"Content\"],\"primary\":\"Content\",\"required\":[\"Content\"]}}}\n<!-- END CONTEXT GENERATED:owner-profile -->\n\n# Document\n\n## Current\n<!-- BEGIN CONTEXT GENERATED:current -->\n<!-- END CONTEXT GENERATED:current -->\n\n## History\n<!-- BEGIN CONTEXT GENERATED:history -->\n<!-- END CONTEXT GENERATED:history -->\n",
+      "capability": {
+        "schema": "context-owner-capability/v1",
+        "owner": "context-document",
+        "kind": "document",
+        "artifact_schema": "context-document/v1",
+        "authority": "authoritative",
+        "descriptor_digest": "sha256:16fcbe076b7d239d0f236940428f6371c191106b9b3bf3bcd5af73346fce325e",
+        "claim_surface": {
+          "type": "agent_skill",
+          "name": "bobbin:document",
+          "operation": "claim"
+        },
+        "claim_rule": "A current-state statement consumed by an agent or person through recall/envelopes has a stable authoritative slot and substantive content; external deliverable documents remain repository-owned and out of scope",
+        "claim_assertions": [
+          "content_present",
+          "living_document"
+        ],
+        "lifecycle_operations": {},
+        "draft_fields": {
+          "required": {
+            "document_key": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 80
+            },
+            "content": {
+              "type": "string",
+              "min_chars": 1,
+              "max_chars": 6000
+            }
+          },
+          "optional": {}
+        }
+      },
+      "schema": {
+        "schema": "context-document-schema/v1",
+        "protocol": "context-common/v2",
+        "artifact_schema": "context-document/v1",
+        "authority": "authoritative",
+        "owner_descriptor": {
+          "schema": "context-owner-descriptor/v2",
+          "owner": "context-document",
+          "kind": "document",
+          "artifact_schema": "context-document/v1",
+          "authority": "authoritative",
+          "structural_profile": {
+            "schema": "context-structural-profile/v1",
+            "fields": {
+              "scope": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 160
+              },
+              "document_key": {
+                "type": "string",
+                "required": true,
+                "min_chars": 1,
+                "max_chars": 80
+              }
+            },
+            "sections": {
+              "ordered": [
+                "Content"
+              ],
+              "required": [
+                "Content"
+              ],
+              "primary": "Content"
+            },
+            "index_projection": [
+              "scope",
+              "document_key"
+            ],
+            "lifecycle": {
+              "allowed_topologies": [
+                "create_current",
+                "replace_same_state"
+              ],
+              "reasons": {}
+            }
+          }
+        },
+        "features": [
+          "context-owner-descriptor/v2",
+          "exact-rfc6901-claim-binding",
+          "scope-document-key-slot",
+          "stable-id-update"
+        ],
+        "workflow_surface": {
+          "entrypoint": "document_workflow.mjs",
+          "commands": [
+            "preview",
+            "apply"
+          ],
+          "preview_input_modes": [
+            "inline"
+          ],
+          "preflight": "derived_from_verified_core_manifests_and_doctor",
+          "preview_state": "awaiting_approval",
+          "core_cli": "same_package_only",
+          "receipt_schema": "bobbin-receipt/v1",
+          "receipt_contract": {
+            "schema": "bobbin-receipt/v1",
+            "fields": [
+              "schema",
+              "created_at",
+              "preview",
+              "receipt_digest"
+            ],
+            "selection": "agent_retained_explicit_path",
+            "ttl_seconds": 86400,
+            "receipt_digest_role": "damage_detection_only"
+          }
+        },
+        "physical_write": false,
+        "runtime": {
+          "language": "typescript",
+          "node": ">=20.20.0",
+          "entrypoint": "skills/document/scripts/document_cli.mjs",
+          "core": "same_package_library",
+          "external_core_substitution": false
+        }
+      }
+    }
+  }
+}

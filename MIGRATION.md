@@ -1,3 +1,11 @@
+# Bobbin 2.0.0 — TypeScript core / CLI transition
+
+Use Node.js 20.20.0+ and the packaged `.mjs` entrypoints. Existing records do not
+need migration. Stop Python writers before the exclusive handover and recreate
+pending previews. Read the [current compatibility contract](docs/compatibility.md)
+and [library API](docs/node-api.md) before changing runtime. The historical
+release notes below remain for provenance.
+
 # Bobbin 1.0.0 transition
 
 Bobbin replaces the six independently installed `context-*` packages with one
@@ -18,7 +26,7 @@ Installed-host changes and tag/Release publication remain separate actions.
    The first init imports registered semantic areas with `explicit` approval.
    Choose `auto` or `adaptive` explicitly if wanted; no silent policy switch occurs.
 5. For a shared vault, pass `--project PROJECT --vault VAULT` to
-   `plugins/bobbin/skills/init/scripts/bobbin_init.py --host HOST`. Guidance and
+   `plugins/bobbin/skills/init/scripts/bobbin_init.mjs --host HOST`. Guidance and
    `.bobbin/config.json` belong to PROJECT; the corpus stays in VAULT.
 
 Reinit preserves omitted choices. `--features ''` leaves built-ins only. Disabled

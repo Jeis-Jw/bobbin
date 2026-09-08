@@ -3,6 +3,29 @@
 Bobbin has one public package version. Historical 0.x entries describe Context Plugins release sets, whose component versions could differ. Source preparation, tags and publication remain separate states.
 
 
+## 2.0.0 — Shared TypeScript core — 2026-09-08
+
+- Replace the Python product runtime with one reusable TypeScript core, Node CLI,
+  and packaged Agent plugin adapters. Node.js 20.20.0+ is required; Python, Git,
+  Electron and global plugin installation are not runtime dependencies.
+- Ship `@bobbin/context` with CommonJS/ESM imports and TypeScript declarations;
+  CLI and library share the same operations, errors and sole-writer implementation.
+- Preserve all eight artifact kinds, stored IDs, text, scopes, lifecycle links,
+  selective recall and project recording modes. ASM successors now retain supplied
+  optional metadata that the former Python builder omitted.
+- Introduce `Operation`, `bobbin-preview/v1` and private `bobbin-receipt/v1` inputs.
+  Old Python mutation bundles and pending receipts are not executable Node inputs.
+  The new runtime and transport requirements make this a major version change;
+  stored `context-common/v2` schemas and owner descriptor hashes remain unchanged.
+- Coordinate callers with a vault-local lock, compare-and-swap checks, durable
+  rollback journal and explicit dead-owner recovery. Python-to-Node handover is
+  exclusive; mixed runtime writes are unsupported.
+- Validate actual package consumers, plugin commands, Node 20/24, Electron and
+  ASAR execution, plus fixed-input Python/TS and Unicode 15.1 comparisons. The
+  former Python source is frozen as a development-only comparison reference.
+- Keep source push, tags, npm publication and marketplace submission separate.
+  See [migration and limitations](docs/compatibility.md).
+
 ## 1.0.0 — Bobbin — 2026-09-05
 
 - One Bobbin package and version for Codex and Claude Code; semantic owners remain

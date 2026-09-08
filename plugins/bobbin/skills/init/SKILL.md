@@ -3,6 +3,8 @@ name: init
 description: Set up or reconfigure the installed Bobbin plugin for a project, choosing semantic features and a recording approval mode.
 ---
 
+Runtime: Node.js 20.20.0+. Use the `.mjs` entrypoint in this package; no Python or global plugin lookup.
+
 # Bobbin init
 
 Init configures already-installed code; it never installs or uninstalls plugins.
@@ -15,8 +17,8 @@ a fresh vault defaults to decision and explicit. SNAP, OBS and ARCHIVE are built
 Use the loaded skill's own path to resolve this command:
 
 ```bash
-python3 /loaded/bobbin/skills/init/scripts/bobbin_init.py --host codex --json
-python3 /loaded/bobbin/skills/init/scripts/bobbin_init.py --host claude-code --features decision,intent,document --approval-mode adaptive --json
+node /loaded/bobbin/skills/init/scripts/bobbin_init.mjs --host codex --json
+node /loaded/bobbin/skills/init/scripts/bobbin_init.mjs --host claude-code --features decision,intent,document --approval-mode adaptive --json
 ```
 
 Use `--project DIR` for a specific project and `--vault DIR` for an existing shared

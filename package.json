@@ -1,0 +1,56 @@
+{
+  "name": "@bobbin/context",
+  "version": "2.0.0",
+  "description": "Filesystem context records shared by Node.js clients and the Bobbin CLI",
+  "type": "commonjs",
+  "main": "./plugins/bobbin/dist/index.js",
+  "types": "./plugins/bobbin/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./plugins/bobbin/dist/index.d.ts",
+      "default": "./plugins/bobbin/dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "bobbin": "./plugins/bobbin/dist/cli.js"
+  },
+  "files": [
+    "plugins/bobbin/dist",
+    "plugins/bobbin/skills/**/*.md",
+    "plugins/bobbin/skills/**/*.mjs",
+    "plugins/bobbin/rules",
+    "plugins/bobbin/templates",
+    "plugins/bobbin/.claude-plugin",
+    "plugins/bobbin/.codex-plugin",
+    "README.md",
+    "README.ko.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "AGENTS.md",
+    "MIGRATION.md",
+    "LICENSE",
+    "docs/node-api.md",
+    "docs/node-api.ko.md",
+    "docs/compatibility.md",
+    "examples/consumer.cjs"
+  ],
+  "engines": {
+    "node": ">=20.20.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test tests/node/*.test.cjs",
+    "test:compat": "npm run build && python3 tests/compat/compare.py && python3 tests/compat/compare_state.py && python3 tests/compat/compare_unicode.py && python3 tests/compat/compare_scale.py",
+    "prepack": "npm run build",
+    "test:reference": "python3 -m pytest -q -c tests/compat/python/pytest.ini tests/compat/python/tests",
+    "test:package": "node scripts/test-package.cjs"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "^5.9.3"
+  }
+}

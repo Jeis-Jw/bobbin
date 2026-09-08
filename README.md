@@ -19,7 +19,11 @@ project chooses which semantic features participate.
 
 ## Install
 
-Bobbin 1.0.0 requires Python 3.11+ and Codex or Claude Code. The source repository
+The TypeScript core and CLI require Node.js 20.20.0 or newer. Python and an agent
+host are not required. See [Node installation and library API](docs/node-api.md)
+and [compatibility and handover](docs/compatibility.md) for the local package.
+
+For the optional Agent plugin, use Codex or Claude Code. The source repository
 is [Jeis-Jw/bobbin](https://github.com/Jeis-Jw/bobbin).
 
 ```bash

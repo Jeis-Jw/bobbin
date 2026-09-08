@@ -3,6 +3,8 @@ name: snapshot
 description: 사용자가 명시적으로 요청할 때 unfinished 작업의 named SNAP handoff를 저장·갱신·조회·폐기하고, 이전 작업을 이어갈 때 SNAP을 load한다.
 ---
 
+실행 요건: Node.js 20.20.0 이상. 이 패키지의 `.mjs` 진입점을 사용하며 Python이나 전역 플러그인을 탐색하지 않는다.
+
 # Snapshot (한국어)
 
 먼저 [공통 기록 정책](../context/references/recording-policy.md)을 따릅니다. 기능 활성화와 `explicit|auto|adaptive` 승인은 프로젝트의 `.bobbin/config.json`이 정합니다. 아래 사용자 승인 절차는 `explicit` 모드에 적용하며, 자동 모드에서는 같은 검증 경로에 정책 승인을 전달합니다. 기능이 꺼져 있으면 자동 참여와 새 기록을 중단하지만 명시적 과거 기록 읽기는 가능합니다. 의미 검증과 사용자 결정의 근거는 모든 모드에서 유지합니다.
@@ -18,9 +20,9 @@ SNAP은 `authority: staging`인 mutable resume context다. 결정·관찰의 권
 `/loaded/...`는 skill catalog에 있는 이 파일의 실제 경로로 바꾼다. 열린 항목과 다음 단계는 한 줄에 한 항목(`- ` 불릿은 선택, 항목당 240자 이내)이고 현재 맥락은 한 문단이다.
 
 ```bash
-python3 /loaded/bobbin/skills/context/scripts/context_cli.py snapshot list --json
-python3 /loaded/bobbin/skills/context/scripts/context_cli.py snapshot load --id '<id>' --json
-python3 /loaded/bobbin/skills/context/scripts/context_cli.py snapshot save --approved \
+node /loaded/bobbin/skills/context/scripts/context_cli.mjs snapshot list --json
+node /loaded/bobbin/skills/context/scripts/context_cli.mjs snapshot load --id '<id>' --json
+node /loaded/bobbin/skills/context/scripts/context_cli.mjs snapshot save --approved \
   --title '<제목>' --summary '<요약>' --captured-from conversation \
   --attest-handoff-requested --attest-unfinished-context-present \
   --sec-context '<현재 맥락>' --sec-open-items '<열린 항목>' --sec-next-steps '<다음 단계>' --json
