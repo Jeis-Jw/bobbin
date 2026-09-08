@@ -107,7 +107,10 @@ Locally exercised: macOS arm64, Node 20.20.0 and 24.11.1, Electron 44.2.0 with
 embedded Node 24.20.0, and an ASAR consumer. CLI and library run without Python,
 Git, plugin installation or a development checkout dependency.
 
-Not verified: Windows/Linux execution, distributed/network filesystems, actual
+The Ubuntu [CI run for the TypeScript transition](https://github.com/Jeis-Jw/bobbin/actions/runs/34212447672)
+also passed the Node 20/24 CLI, library, package and Python-comparison gates.
+
+Not verified: Windows execution, Linux desktop/Electron packaging, distributed/network filesystems, actual
 power loss/device failure, and live Codex/Claude model behavior using the installed
 plugin. Process-kill and injected error tests establish the stated local recovery
 behavior, not hardware durability on every filesystem. Bureau's full application
