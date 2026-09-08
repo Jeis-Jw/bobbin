@@ -66,6 +66,27 @@ Project settings live in `.bobbin/config.json`, separate from generated
 `AGENTS.md`/`CLAUDE.md` guidance and the record index. Projects may share a vault
 while retaining independent feature and approval settings.
 
+### Try one decision across two sessions
+
+With a fresh setup (Decision + `explicit`), try these messages in your project.
+
+1. In the first session:
+
+   > I decided this trial will support CSV only and leave Excel for later.
+   > I want to validate the first-use flow quickly. Remember this decision.
+
+2. Start a new session in the same project:
+
+   > Why did we postpone Excel support?
+
+3. Then explore a possible change:
+
+   > What about including Excel in this trial too? I haven't decided to change the decision yet.
+
+Look for a record confirmation, recall of the stored reason, then a comparison
+with the existing decision. The last message asks for consideration and does
+not authorize a replacement; proposals remain proposals in `auto`/`adaptive` too.
+
 Use natural requests such as “Why did we choose this?”, “Keep this decision”,
 or “Save where we stopped.” Bobbin uses relevant records without loading the
 entire vault. Exact-payload validation and write integrity remain active in

@@ -16,6 +16,35 @@ def draft_pair(result: dict) -> tuple[str, str]:
 
 
 class DecisionConflictTests(unittest.TestCase):
+    def test_check_actions_follow_recording_policy_and_reuse_same_silently(self) -> None:
+        with helpers.vault_dir() as temp:
+            repo = helpers.Path(temp)
+            helpers.write_decision_area(repo, current=[draft_pair(helpers.claim_result())])
+            before = helpers.tree_digest(repo)
+
+            for slot in ((), ("--scope", "project/auth", "--decision-key", "session-owner")):
+                with self.subTest(slot=slot):
+                    completed = helpers.subprocess.run(
+                        [
+                            helpers.sys.executable, str(helpers.CLI_PATH), "check",
+                            "--statement", "인증 세션은 BFF가 소유한다.", *slot, "--json",
+                        ],
+                        cwd=repo, text=True, capture_output=True,
+                    )
+                    self.assertEqual(0, completed.returncode, completed.stdout + completed.stderr)
+                    actions = helpers.json.loads(completed.stdout)["result"]["assessment_contract"]["actions"]
+                    for directive in (
+                        "shared recording policy", "explicit/auto/adaptive",
+                        "Explicit choice only", "no second storage ask",
+                    ):
+                        self.assertIn(directive, actions["new"])
+                    self.assertIn("silently", actions["same"])
+                    self.assertIn("no duplicate DEC", actions["same"])
+                    self.assertIn("cite if needed", actions["same"])
+                    self.assertNotIn("Ask about capture", actions["new"])
+                    self.assertFalse(actions["same"].startswith("Cite"))
+                    self.assertEqual(before, helpers.tree_digest(repo))
+
     def test_acceptance_26_duplicate_slot(self) -> None:
         with helpers.vault_dir() as temp:
             repo = helpers.Path(temp)

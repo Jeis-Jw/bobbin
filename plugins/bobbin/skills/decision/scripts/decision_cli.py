@@ -67,8 +67,8 @@ TYPED_RELATION_FLAGS = {
     "affects_documents": "--affects-document",
 }
 RELATION_ACTIONS = {
-    "new": "Ask about capture after the decision becomes explicit.",
-    "same": "Cite the existing DEC without creating another one.",
+    "new": "Explicit choice only; use shared recording policy (explicit/auto/adaptive); no second storage ask.",
+    "same": "Reuse silently; cite if needed; no duplicate DEC.",
     "supporting": "If the evidence is durable, consider OBS without changing the decision.",
     "rationale_changed": "Quote every returned non-empty actual section; hold action and ask both choices: keep = not performed; supersede only after explicit choice.",
     "conflict": "Quote every returned non-empty actual section, including Revisit conditions; classify revisit only from user-supplied present facts, never the requested conflicting action; hold and ask both choices: keep = not performed; supersede only after explicit choice. Revisit permits reassessment, not implementation.",
