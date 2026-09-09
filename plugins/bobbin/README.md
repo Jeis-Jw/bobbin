@@ -1,4 +1,4 @@
-# Bobbin 2.1.0
+# Bobbin 2.1.1
 
 Node.js 20.20.0+ runs the packaged core and `.mjs` entrypoints. Python is not required.
 

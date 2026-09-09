@@ -2,7 +2,7 @@
 
 하나의 `@bobbin/context` 패키지에 코어, CLI, 타입 선언과 Agent plugin 진입점을
 포함합니다. **Node.js 20.20.0 이상**이 필요합니다. 실행 시 Python, Git, Electron,
-전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.1.0**이며,
+전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.1.1**이며,
 소스 버전 갱신과 npm 공개 배포는 별개입니다.
 
 호출한 OS 사용자가 쓸 수 있는 로컬 디렉터리를 사용합니다. 읽기에도 공통 잠금이
@@ -16,7 +16,7 @@ npm run test:compat  # 개발용 Python 3.13 비교 검증
 npm pack --pack-destination /path/to/packages
 
 # 독립 소비자에서 실제 tarball 설치
-npm install /path/to/packages/bobbin-context-2.1.0.tgz
+npm install /path/to/packages/bobbin-context-2.1.1.tgz
 npx --no-install bobbin init --vault /path/to/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/vault --query '저장소'
 ```

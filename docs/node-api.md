@@ -1,6 +1,6 @@
 # Node.js core and CLI
 
-Bobbin 2.1.0 provides a reusable TypeScript core. One `@bobbin/context`
+Bobbin 2.1.1 provides a reusable TypeScript core. One `@bobbin/context`
 package contains the core, compiled CLI, type declarations and agent entrypoints.
 It needs Node.js **20.20.0 or newer**. It has no runtime dependencies, native addons,
 Python, Electron, Git, plugin-installation or network requirements.
@@ -15,13 +15,13 @@ npm run test:compat           # optional development comparison: Python 3.13
 npm pack --pack-destination /path/to/packages
 
 # In an independent consumer. This installs the tarball, not a checkout symlink.
-npm install /path/to/packages/bobbin-context-2.1.0.tgz
+npm install /path/to/packages/bobbin-context-2.1.1.tgz
 npx --no-install bobbin init --vault /path/to/existing/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/existing/vault --query 'storage'
 ```
 
 A global CLI install from the same tarball is also supported:
-`npm install --global /path/to/packages/bobbin-context-2.1.0.tgz`.
+`npm install --global /path/to/packages/bobbin-context-2.1.1.tgz`.
 This document does not imply a package has been published to npm.
 
 The plugin checkout ships compiled `plugins/bobbin/dist/` so loading the plugin

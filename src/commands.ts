@@ -78,7 +78,7 @@ export async function kindCommand(bobbin: Bobbin, kind: Kind, command: string, w
             return { input: semantic, input_digest: canonicalDigest(semantic), successor };
         let sameClaim = flags['same-claim-attestation'] ? loadJson(flags['same-claim-attestation']) : flags['lifecycle-attestation'] ? loadJson(flags['lifecycle-attestation']) : undefined;
         if (!sameClaim) {
-            check(flags['attest-same-claim'] === true, 'semantic_attestation_invalid', 'Compare both actual claims and supply --attest-same-claim or a bound same-claim attestation.');
+            check(flags['attest-same-claim'] === true, 'semantic_attestation_invalid', 'Supersession requires a same-claim attestation. Compare the predecessor and successor actual bodies, scope, and rationale; only if they address the same governing claim, retry with --attest-same-claim or --same-claim-attestation @<file> bound to that comparison. Approval does not supply this attestation.');
             sameClaim = createAttestation(semantic, [{ name: 'same_semantic_claim', value: true, evidence_pointers: ['/predecessor/primary_claim', '/successor/primary_claim'] }], 'same_claim');
         }
         return submit(bobbin, { action: 'supersede', id, successor, sameClaim, ...(flags.now ? { now: flags.now } : {}) }, flags, command === 'record' || !!flags.approved);

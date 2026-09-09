@@ -20,6 +20,8 @@ OBS는 `authority: evidence`인 immutable semantic claim이다. DEC처럼 따를
 
 CLI는 `../context/scripts/context_cli.mjs observation ...`을 사용하고 물리 write는 context-core만 수행한다.
 
+capability descriptor의 preview 제한: Observation은 1–1,200 codepoint, Evidence는 substantive 항목 1–6개이며 항목당 최대 500 codepoint다. `--sec-evidence`를 반복하거나 줄바꿈으로 항목을 나눈다. 의미가 달라지도록 근거를 잘라내지 않는다. 전체 필드 규격은 `node /loaded/bobbin/skills/context/scripts/context_cli.mjs observation capabilities --json`으로 확인한다.
+
 ```bash
 node /loaded/bobbin/skills/context/scripts/context_cli.mjs observation preview --title '<제목>' --summary '<요약>' --captured-from workspace --attest-reusable-observation --attest-evidence-present --sec-observation '<관찰>' --sec-evidence '<근거>' --json
 node /loaded/bobbin/skills/context/scripts/context_cli.mjs transaction apply --receipt-file '<agent가 유지한 result.receipt_file>' --approved-digest '<agent가 유지한 result.approval_digest>' --json

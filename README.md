@@ -17,6 +17,18 @@ Keep the reasoning behind a choice, recall it when it matters, and continue work
 without repeating the whole conversation. One plugin contains all features; each
 project chooses which semantic features participate.
 
+### What has been validated?
+
+The repository's [Node tests](https://github.com/Jeis-Jw/bobbin/tree/main/tests/node)
+exercise recording decisions and reasons, preserving earlier reasons when a
+decision is replaced, and reading Current/History records. These checks support
+Bobbin's role in managing durable decisions and their history.
+
+We have not established better accuracy or lower model-token or dollar costs
+than well-maintained Markdown/ADRs. Long-term benefits in real organizations
+have not been measured. Use the two-session example below to assess whether
+this record management helps your project.
+
 ## Install
 
 The TypeScript core and CLI require Node.js 20.20.0 or newer. Python and an agent

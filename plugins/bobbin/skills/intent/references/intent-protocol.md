@@ -2,7 +2,7 @@
 
 The TypeScript runtime uses one packaged core. For executable API/CLI and preview contracts, see the [current transport contract](../../context/references/node-runtime.md). The artifact schemas, semantic rules and lifecycle constraints below remain applicable; former Python subprocess/handshake and mutation-bundle details are historical.
 
-Bobbin 2.1.0 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](../../context/references/recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
+Bobbin 2.1.1 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](../../context/references/recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
 
 `context-intent/v1` uses descriptor v2 with authoritative slot `(scope, intent_key)`. `Intent` is required; `Success criteria`, `Constraints`, and `Revisit conditions` are optional.
 

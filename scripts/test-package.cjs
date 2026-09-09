@@ -42,9 +42,10 @@ function run(executable, args, options = {}) {
     const checked = wrapped('decision/scripts/decision_cli.mjs', ['check', '--statement', 'Use local files.', '--scope', 'package', '--decision-key', 'storage']);
     assert.equal(checked.result.comparison_input.current.length, 1);
     assert.equal(wrapped('context/scripts/context_cli.mjs', ['doctor']).result.record_count, 1);
+    const guidance = run(process.execPath, ['--test', path.join(root, 'tests/node/guidance.test.cjs'), path.join(root, 'tests/node/decision-navigation.test.cjs')], { env: { ...process.env, BOBBIN_TEST_PACKAGE_ROOT: packageRoot } });
     fs.writeFileSync(path.join(consumer, 'consumer.ts'), "import {createBobbin,createCandidate,ReadResult} from '@bobbin/context'; const b=createBobbin({vault:'/an/existing/directory'}); const c=createCandidate({kind:'snapshot',title:'Handoff',summary:'Resume',ownerInputs:{current_context:'Continue',open_items:['Check'],next_steps:['Run']}}); const read:Promise<ReadResult>=b.read('ctx_...'); void c; void read;\n");
     run(process.execPath, [require.resolve('typescript/bin/tsc'), '--noEmit', '--strict', '--module', 'Node16', '--target', 'ES2022', '--types', 'node', '--typeRoots', path.join(root, 'node_modules/@types'), 'consumer.ts']);
-    const result = { ok: true, version, tarball, integrity: packed.integrity, files: packed.files.length, package_bytes: packed.size, node: nodeResult, esm_import: imported.trim(), typescript_consumer: true, plugin_flow: true };
+    const result = { ok: true, version, tarball, integrity: packed.integrity, files: packed.files.length, package_bytes: packed.size, node: nodeResult, esm_import: imported.trim(), typescript_consumer: true, plugin_flow: true, shipped_guidance: guidance.trim() };
     if (process.env.BOBBIN_TEST_NODE)
         result.node_minimum = JSON.parse(run(process.env.BOBBIN_TEST_NODE, [path.join(consumer, 'consumer.cjs')], { env: { ...process.env, PATH: '' } }));
     if (process.env.BOBBIN_TEST_ELECTRON) {

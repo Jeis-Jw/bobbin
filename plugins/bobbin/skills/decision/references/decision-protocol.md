@@ -2,7 +2,7 @@
 
 The TypeScript runtime uses one packaged core. For executable API/CLI and preview contracts, see the [current transport contract](../../context/references/node-runtime.md). The artifact schemas, semantic rules and lifecycle constraints below remain applicable; former Python subprocess/handshake and mutation-bundle details are historical.
 
-Bobbin 2.1.0 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](../../context/references/recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
+Bobbin 2.1.1 uses one package and one `$bobbin:init` entrypoint. User-approval instructions below describe explicit mode; auto/adaptive use the same validated path under the [shared recording policy](../../context/references/recording-policy.md). Semantic validity and genuine user commitment remain required independently of recording authorization. Owner and schema identifiers are compatibility contracts, not separate installation units.
 
 `decision_cli.mjs` is the semantic owner of `context-decision/v1`. It builds complete DEC drafts, lifecycle effects, `context-owner-plan/v1`, `context-owner-validation-receipt/v1`, and bounded recall. It never creates directories, writes files or indexes, locks repositories, seals final approval digests, or applies bundles. Context-core is the only physical coordinator.
 

@@ -22,6 +22,8 @@ Treat a direct, explicit, unconditional user statement that settles the observat
 
 Use `../context/scripts/context_cli.mjs observation ...`; context-core remains the only writer.
 
+Preview limits from the capability descriptor: Observation is 1–1,200 codepoints; Evidence is 1–6 substantive items, at most 500 codepoints per item. Repeat `--sec-evidence` or separate items with newlines; do not truncate evidence in a way that changes its meaning. For all fields, use `node /loaded/bobbin/skills/context/scripts/context_cli.mjs observation capabilities --json`.
+
 ```bash
 node /loaded/bobbin/skills/context/scripts/context_cli.mjs observation preview --title '<title>' --summary '<summary>' --captured-from workspace --attest-reusable-observation --attest-evidence-present --sec-observation '<claim>' --sec-evidence '<evidence>' --json
 node /loaded/bobbin/skills/context/scripts/context_cli.mjs transaction apply --receipt-file '<agent-retained result.receipt_file>' --approved-digest '<agent-retained result.approval_digest>' --json

@@ -7,7 +7,7 @@
 - `context-core`는 storage, index, routing, approval과 physical write를 소유하고 semantic owner는 자기 artifact의 의미, comparison과 lifecycle을 소유한다.
 - 의미 동일성·conflict·rationale change는 hash, ID나 index metadata가 아니라 실제 body, scope와 rationale로 판단한다.
 - 소비자 프로젝트의 durable write는 `.bobbin/config.json`의 `explicit|auto|adaptive` 승인 모드와 활성 기능을 따른다. 이 저장소의 내부 개발 context는 상위 vault 정책을 따르며 구현 승인을 context 기록 승인으로 확장하지 않는다. 모든 모드에서 frozen bundle, semantic validity와 physical write 검증을 유지한다.
-- 모든 semantic owner는 같은 Bobbin 패키지의 core를 사용한다. 별도 plugin dependency를 설치하지 않으며 공개 버전은 `2.1.0`, protocol은 기존 `context-common/v2`다. 역사적 artifact schema와 scope는 리브랜딩하지 않는다.
+- 모든 semantic owner는 같은 Bobbin 패키지의 core를 사용한다. 별도 plugin dependency를 설치하지 않으며 공개 버전은 `2.1.1`, protocol은 기존 `context-common/v2`다. 역사적 artifact schema와 scope는 리브랜딩하지 않는다.
 - source, marketplace, version 또는 protocol 변경은 두 host catalogs, plugin manifests, fixtures, public docs와 distribution tests를 함께 갱신한다.
 - 외부 remote 생성, push, marketplace publication과 license 선택은 별도 명시 승인 없이는 수행하지 않는다.
 

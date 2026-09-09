@@ -132,7 +132,7 @@ function prepareDecisionCheck(root, options) {
                 selected.push(item);
         }
     }
-    const proposal = { statement, rationale: rationale || null, scope, decision_key: key, query: query || null }, current = [];
+    const proposal = { statement, rationale: rationale || null, scope, decision_key: key, query: query || null }, current = [], currentLinks = [];
     for (const item of selected) {
         const content = (0, filesystem_1.readText)(root, item.row.path), doc = (0, documents_1.parseDocument)(content, area.descriptor), fm = doc.frontmatter, sections = Object.fromEntries(CORE_SECTIONS.map(k => [k, (0, documents_1.sectionValue)(doc, k)])), revisit = (0, documents_1.sectionValue)(doc, 'Revisit conditions');
         if (revisit)
@@ -143,12 +143,14 @@ function prepareDecisionCheck(root, options) {
             continue;
         }
         current.push(record);
+        currentLinks.push({ id: fm.id, state: 'current', supersedes: fm.supersedes ?? [] });
     }
     const comparison = { schema: 'context-decision-comparison-input/v1', proposal, current }, extract = (items) => items.map(x => ({ id: x.id, path: x.path, sha256: x.sha256 })), selectedIds = new Set(current.map(x => x.id)), omitted = rows.length - current.length, sample = ranked.filter(x => !selectedIds.has(x.row.id)).slice(0, 8).map(x => x.row.id);
     const assessment = { relations: ['new', 'same', 'supporting', 'rationale_changed', 'conflict'], required_fields: ['relation', 'related_ids', 'reason'], actions: common_1.contracts.owners.decision.relation_actions, rule: 'Judge returned actual sections, not hashes or similarity. For rationale_changed/conflict, quote every returned non-empty actual section, hold action, and ask one explicit binary question: keep = not performed; supersede only after explicit choice. Revisit permits reassessment, not implementation. The explicit choice settles that decision payload and authorizes capture without a second storage question.' };
     if (current.some(x => x.sections['Revisit conditions']))
         assessment.conflict_revisit = { required_when: 'relation=conflict and a related Current DEC has non-empty Revisit conditions', required_fields: ['revisit_conditions', 'revisit_assessment'], classifications: ['satisfied', 'no evidence', 'ambiguous'], rule: 'Surface each relevant stored Revisit condition from comparison_input.sections and state the selected classification token verbatim in the user response. Do not invent evidence. Use satisfied only when user-supplied present facts directly establish it; the requested conflicting action itself is not evidence. Use no evidence when facts are absent or concern something other than the stored condition. Use ambiguous only when user-supplied condition facts are relevant but incomplete or conflicting.' };
     const result = { schema: 'context-decision-check/v1', coverage: exact ? 'exact_slot' : 'discovery_only', comparison_input: comparison, input_digest: (0, common_1.canonicalDigest)(comparison), deterministic: { exact_slot: extract(current.filter(x => exact && x.scope === scope && x.decision_key === key)), scope_overlap: extract(current.filter(x => exact && x.decision_key === key && x.scope !== scope && (0, common_1.scopesOverlap)(x.scope, scope))) }, assessment_contract: assessment, retrieval: { total_current: rows.length, metadata_matches: eligible.length, body_reads: current.length, selected_semantic_bytes: Buffer.byteLength((0, common_1.canonicalJson)(current)), index_sha256: (0, common_1.sha256)(Buffer.from(area.text)), returned: current.length, omitted, omitted_id_sample: sample, omitted_id_sample_truncated: omitted > sample.length, full_current_set: omitted === 0, bounded: true }, warning: 'relation=new is valid only within the queried Current set and does not prove global absence of conflict.', physical_write: false };
+    result.current_links = currentLinks;
     if (!exact)
         result.caveat = 'no-conflict cannot be concluded; re-run with exact scope/decision_key before preview';
     (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(result)) <= 32768, 'comparison_too_large', 'Decision check exceeds its output byte limit.', {}, common_1.EXIT.conflict);

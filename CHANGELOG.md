@@ -3,6 +3,20 @@
 Bobbin has one public package version. Historical 0.x entries describe Context Plugins release sets, whose component versions could differ. Source preparation, tags and publication remain separate states.
 
 
+## 2.1.1 — Decision guidance and history navigation — 2026-09-09
+
+- Complete DEC supersede examples with same-claim attestation after actual
+  body, scope and rationale comparison. Explain missing attestation errors
+  without weakening semantic validation or inferring approval.
+- Add `current_links` to decision checks without changing the existing
+  comparison input or digest. Reuse applicable actual bodies and read History
+  by stable ID, including its actual path and historical authority.
+- Expose OBS evidence count and codepoint limits beside its examples, and
+  update the shared recording policy to the shipped `.mjs` workflow.
+- Clarify validated record-management behavior and unestablished model-cost
+  advantages. Verify the EN/KO examples and history navigation in both the
+  source runtime and the installed package.
+
 ## 2.1.0 — SNAP storage — 2026-09-09
 
 - Allow SNAP logical input up to 256 KiB (262,144 UTF-8 bytes), with one size

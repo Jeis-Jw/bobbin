@@ -61,7 +61,7 @@ feature selection under locks immediately before every write.
 - DEC supports these same options on one-call `decision_workflow.mjs record`.
   Use `--approval-source policy` without `--approved` for a policy-authorized
   record. Semantic attestation flags still assert real evidence, not approval.
-- Other owners use their `*_workflow.py preview` then `apply`. Built-ins use
+- Other owners use their `*_workflow.mjs preview` then `apply`. Built-ins use
   `context_cli.mjs ...` then `transaction apply`. No extra approval roundtrip
   is needed between these tool calls in auto/adaptive-record mode.
 

@@ -1,6 +1,6 @@
 {
   "name": "@bobbin/context",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Filesystem context records shared by Node.js clients and the Bobbin CLI",
   "type": "commonjs",
   "main": "./plugins/bobbin/dist/index.js",
