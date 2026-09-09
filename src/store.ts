@@ -5,7 +5,7 @@ import { Kind, kinds, ContextDocument, parseDocument, renderDocument, sectionVal
 import { Candidate, Attestation, DraftOptions, draftCapture, validateAttestation, primaryClaim, sectionFields } from './owners';
 import { Filesystem, FileChange, identity, realDirectory, contained, bytes, readText, utf8, digestOrNull } from './filesystem';
 import { ROOT_INDEX, Area, RecordEntry, registeredAreas, newArea, renderRoot, scanRecords, findRecord, rebuildArea, projectEntry, validateRelations, validateSlots, listArtifactPaths, referenceIds } from './catalog';
-import { DecisionCheckOptions, prepareDecisionCheck, decisionSpecView } from './decision';
+import { DecisionCheckOptions, DecisionCompareOptions, prepareDecisionCheck, prepareDecisionCompare, decisionSpecView } from './decision';
 import { runtimeDigest } from './runtime';
 import { CandidateBatch, routeCandidates, operationFromOwnerResult } from './routing';
 import { SNAP_TRANSPORT_MAX_BYTES } from './snapshot';
@@ -499,7 +499,7 @@ export class Bobbin {
                 if (op.action === 'capture')
                     for (const id of op.acknowledgements ?? [])
                         ids.add(id);
-            const read_preconditions = scanRecords(this.vault, areas).filter(r => ids.has(r.row.id) && !changedPaths.has(r.path)).map(r => ({ path: r.path, sha256: sha256(Buffer.from(r.content)) })).sort((a, b) => compareText(a.path, b.path));
+            const read_preconditions = records.filter(r => ids.has(r.row.id) && !changedPaths.has(r.path)).map(r => ({ path: r.path, sha256: sha256(Buffer.from(r.content)) })).sort((a, b) => compareText(a.path, b.path));
             const base = { schema: 'bobbin-preview/v1' as const, plan_id: newPlanId(), vault_identity: identity(this.vault), project_policy: this.policyBinding(), operation, changes, read_preconditions };
             const snapshots = records.filter(r => r.kind === 'snapshot' && changedPaths.has(r.path));
             if (snapshots.length) {
@@ -615,6 +615,7 @@ export class Bobbin {
             return { schema: `context-${kind}-search/v1`, items, returned: items.length, omitted: selected.length - items.length, truncated: selected.length > items.length, metadata_only: true, ...(signal ? { signal } : {}), physical_write: false };
         });
     }
+    async compareDecision(options: DecisionCompareOptions): Promise<ObjectValue> { return this.locked(() => prepareDecisionCompare(this.vault, options)); }
     async checkDecision(options: DecisionCheckOptions): Promise<ObjectValue> { return this.locked(() => prepareDecisionCheck(this.vault, options)); }
     async specView(scope: string, maxBytes?: number): Promise<ObjectValue> { return this.locked(() => decisionSpecView(this.vault, scope, maxBytes)); }
     async revisitDecisions(options: {

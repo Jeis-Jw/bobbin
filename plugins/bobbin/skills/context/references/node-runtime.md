@@ -39,3 +39,32 @@ blocked only in the current shared temp namespace. Mixed runtimes, network
 filesystems and multi-host writers are unsupported. `runtime recover` proves a
 local writer PID is dead before restoring an interrupted journal. It never steals
 a paused live process's lock.
+
+## Scoped decision comparison
+
+Prefer `search('decision', {query, scope})` when coordinates are unknown, then
+`compareDecision({statement, scope, decisionKey, rationale?, query?, limit?, knownCurrent?})`.
+CLI: `decision search --query <term> --scope <scope>` then
+`decision compare --statement <choice> --scope <scope> --decision-key <key>`.
+Skip search when coordinates are known, and reuse a still-valid comparison instead of adding a call.
+Search is metadata-only; an empty result is not proof of absence and must not automatically widen the search.
+
+`DecisionCompareOptions` requires scope and decisionKey. Compare selects only exact/ancestor/descendant scopes.
+Same-key exact and overlapping slots are mandatory; other bodies need distinctive metadata matches
+within that scoped corpus. Scope alone never admits an optional body. Limits remain 8 records by default,
+12 maximum, 24 KiB hydrated comparison and 32 KiB response; mandatory overflow fails rather than truncating.
+
+The single `context-decision-compare/v1` envelope has `coverage:exact_slot`, `comparison`
+(schema `context-decision-comparison-delta/v1`, proposal and current), `deterministic` mandatory IDs,
+`current_links`, `retrieval`, `warnings`, `assessment_contract_ref`, `hydrated_input_digest`,
+`transport_digest` and `physical_write:false`. `retrieval.total_current` is vault-wide;
+`scoped_current`, `outside_scope`, `omitted` and `full_scoped_set` distinguish scoped coverage from global absence.
+`body_reads` counts actual selected file reads, including optional bodies excluded by the byte budget.
+The assessment contract is available in `decision schema` as `comparison_contract`; load it once if the skill
+is not already available. Never infer semantic identity or approval from metadata, references or digests.
+
+`knownCurrent` uses the existing at-most-12 ID/full-file-SHA hints. Only held complete actual sections may be
+referenced. Changed/new records return bodies. Omit hints after partial reads, context loss or handoff.
+Hydrate references and change the comparison schema to `context-decision-comparison-input/v1` before
+checking `hydrated_input_digest`; `transport_digest` hashes the literal `comparison`. Legacy `checkDecision`
+and `decision check` retain their selection policy and full/delta schemas through the shared implementation.

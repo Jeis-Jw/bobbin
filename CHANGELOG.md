@@ -3,6 +3,21 @@
 Bobbin has one public package version. Historical 0.x entries describe Context Plugins release sets, whose component versions could differ. Source preparation, tags and publication remain separate states.
 
 
+## 2.3.0 — Scoped decision comparison — 2026-09-10
+
+- Add `compareDecision()` and `decision compare` with required scope and decision key.
+  Use metadata-only `search` for unknown coordinates; include all same-key required
+  candidates in related scopes and read optional bodies only for distinctive matches.
+- Share candidate selection, body loading and reference transport with legacy `check`,
+  preserving its selection policy and full/delta response contracts.
+- Return one `context-decision-compare/v1` envelope with body references, lifecycle
+  links, digests and scoped omission warnings. Publish static assessment rules through
+  `decision schema` and the EN/KO skills instead of repeating them in every response.
+- Reuse records already loaded by preview for unchanged-reference preconditions.
+  Keep apply-time validation, approval binding, concurrent-change detection and recovery.
+- Validate search body reads, required coverage, stale hints and context-loss fallback,
+  compatibility and installed-package consumers. Synchronize default guidance and docs.
+
 ## 2.2.0 — Opt-in decision body reuse — 2026-09-09
 
 - Add `knownCurrent` and repeated `--known-current ID:SHA256` hints for callers

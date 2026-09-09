@@ -2,7 +2,7 @@
 
 하나의 `@bobbin/context` 패키지에 코어, CLI, 타입 선언과 Agent plugin 진입점을
 포함합니다. **Node.js 20.20.0 이상**이 필요합니다. 실행 시 Python, Git, Electron,
-전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.2.0**이며,
+전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.3.0**이며,
 소스 버전 갱신과 npm 공개 배포는 별개입니다.
 
 호출한 OS 사용자가 쓸 수 있는 로컬 디렉터리를 사용합니다. 읽기에도 공통 잠금이
@@ -16,7 +16,7 @@ npm run test:compat  # 개발용 Python 3.13 비교 검증
 npm pack --pack-destination /path/to/packages
 
 # 독립 소비자에서 실제 tarball 설치
-npm install /path/to/packages/bobbin-context-2.2.0.tgz
+npm install /path/to/packages/bobbin-context-2.3.0.tgz
 npx --no-install bobbin init --vault /path/to/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/vault --query '저장소'
 ```
@@ -92,3 +92,29 @@ Bureau의 프로젝트/작업/에이전트 범위 규칙, 승인 UI, IPC, 충돌
 검증은 후속 통합 작업입니다. 이번 포팅은 Bureau 파일을 변경하지 않습니다.
 
 Python과의 전환 절차, 검증 범위와 제한은 [호환성 문서](compatibility.md)를 확인하세요.
+
+## 범위를 지정한 결정 비교
+
+좌표를 모르면 `search('decision', {query, scope})`로 메타데이터를 찾고
+`compareDecision({statement, scope, decisionKey, rationale?, query?, limit?, knownCurrent?})`로 비교한다.
+CLI는 `decision search --query <검색어> --scope <scope>` 뒤
+`decision compare --statement <선택> --scope <scope> --decision-key <key>`다.
+좌표나 유효한 비교 결과를 알고 있으면 불필요한 호출을 생략한다. 빈 검색 결과를 무충돌로
+판단하거나 전역 검색으로 자동 확대하지 않는다.
+
+`DecisionCompareOptions`의 scope와 decisionKey는 필수다. 같은 scope와 상·하위 scope에서
+같은 key의 필수 대상을 모두 포함하고, 선택적 본문은 그 범위에서 구별되는 메타데이터 일치가 있어야 한다.
+범위만 같으면 본문을 읽지 않는다. 기본 8개·최대 12개, 복원된 비교 입력 24 KiB·응답 32 KiB 제한을
+유지하며 필수 본문 초과는 생략 대신 실패한다.
+
+단일 `context-decision-compare/v1` 응답은 `coverage:exact_slot`, `comparison`(proposal/current),
+`deterministic`, `current_links`, `retrieval`, `warnings`, `assessment_contract_ref`, 두 digest와
+`physical_write:false`를 반환한다. `total_current`는 전체, `scoped_current`·`outside_scope`·`omitted`·
+`full_scoped_set`는 범위 제한을 설명한다. `body_reads`는 byte 제한으로 빠진 선택적 본문까지 실제 읽기를 센다.
+정적 판단 계약은 `decision schema`의 `comparison_contract`에 있으며 skill이 없으면 먼저 한 번 읽는다.
+
+`knownCurrent`는 기존 ID·전체 파일 SHA 힌트(최대 12개)를 재사용한다. 현재 context에 완전한 실제 section이
+남은 기록만 참조로 받을 수 있다. 변경·신규 본문은 반환하고 부분 read·맥락 소실·handoff 뒤에는 힌트를 생략한다.
+`comparison`의 `sections_ref`를 복원하고 schema를 `context-decision-comparison-input/v1`으로 바꾼 값이
+`hydrated_input_digest` 대상이다. `transport_digest`는 실제 `comparison`을 해시한다.
+기존 `checkDecision`·`decision check`의 후보 선택과 full/delta 형식은 공통 구현의 호환 경로로 유지한다.

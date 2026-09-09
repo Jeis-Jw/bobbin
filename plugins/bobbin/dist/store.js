@@ -398,7 +398,7 @@ class Bobbin {
                 if (op.action === 'capture')
                     for (const id of op.acknowledgements ?? [])
                         ids.add(id);
-            const read_preconditions = (0, catalog_1.scanRecords)(this.vault, areas).filter(r => ids.has(r.row.id) && !changedPaths.has(r.path)).map(r => ({ path: r.path, sha256: (0, common_1.sha256)(Buffer.from(r.content)) })).sort((a, b) => (0, common_1.compareText)(a.path, b.path));
+            const read_preconditions = records.filter(r => ids.has(r.row.id) && !changedPaths.has(r.path)).map(r => ({ path: r.path, sha256: (0, common_1.sha256)(Buffer.from(r.content)) })).sort((a, b) => (0, common_1.compareText)(a.path, b.path));
             const base = { schema: 'bobbin-preview/v1', plan_id: (0, common_1.newPlanId)(), vault_identity: (0, filesystem_1.identity)(this.vault), project_policy: this.policyBinding(), operation, changes, read_preconditions };
             const snapshots = records.filter(r => r.kind === 'snapshot' && changedPaths.has(r.path));
             if (snapshots.length) {
@@ -514,6 +514,7 @@ class Bobbin {
             return { schema: `context-${kind}-search/v1`, items, returned: items.length, omitted: selected.length - items.length, truncated: selected.length > items.length, metadata_only: true, ...(signal ? { signal } : {}), physical_write: false };
         });
     }
+    async compareDecision(options) { return this.locked(() => (0, decision_1.prepareDecisionCompare)(this.vault, options)); }
     async checkDecision(options) { return this.locked(() => (0, decision_1.prepareDecisionCheck)(this.vault, options)); }
     async specView(scope, maxBytes) { return this.locked(() => (0, decision_1.decisionSpecView)(this.vault, scope, maxBytes)); }
     async revisitDecisions(options = {}) { return this.locked(() => { const area = (0, catalog_1.registeredAreas)(this.vault).find(a => a.row.area === 'decision'); (0, common_1.check)(area, 'area_not_registered', 'Decision owner is not initialized.'); const today = options.asOf ?? new Date().toISOString().slice(0, 10), rows = (0, documents_1.parseAreaIndex)(area.text).current.filter(r => (!options.ids?.length || options.ids.includes(r.id)) && (!options.due || (r.revisit_on && r.revisit_on <= today))); return { items: rows.map(r => this.readResult((0, catalog_1.findRecord)(this.vault, r.id))), as_of: today, returned: rows.length, physical_write: false }; }); }

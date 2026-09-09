@@ -533,6 +533,15 @@
             "max_item_chars": 36
           }
         }
+      },
+      "preferred_comparison_surface": {
+        "type": "cli",
+        "command": "decision_cli.mjs compare"
+      },
+      "discovery_surface": {
+        "type": "cli",
+        "command": "decision_cli.mjs search",
+        "metadata_only": true
       }
     },
     "assumption": {
@@ -902,6 +911,7 @@
           "schema",
           "capabilities",
           "candidate prepare",
+          "compare",
           "check",
           "draft",
           "capture",

@@ -5,6 +5,7 @@ import { sectionFields, draftCapture, createAttestation, validateCandidate } fro
 import { list, loadJson, bodyItems, captureArguments, inlineInputs } from './cli-input';
 import { freezeReceipt, applyReceipt, rejectReceipt } from './receipts';
 import { draftOwnerResult, declineOwnerResult, validateCandidateBatch, operationFromOwnerResult } from './routing';
+import { DECISION_ASSESSMENT_CONTRACT, decisionAssessmentContract } from './decision';
 import { renderSnapshotList } from './snapshot';
 export function authorization(flags: ObjectValue): Authorization {
     if (flags.authorization)
@@ -26,6 +27,11 @@ export async function kindCommand(bobbin: Bobbin, kind: Kind, command: string, w
     if (command === 'init') {
         const settings = bobbin.settings(), existing = settings.config?.features ?? settings.registered_features;
         return bobbin.initialize({ features: [...new Set([...existing, ...(contracts.owners[kind] ? [kind] : [])])] as any, host: flags.host });
+    }
+    if (command === 'schema' && kind === 'decision') {
+        const assessment = decisionAssessmentContract();
+        assessment.conflict_revisit.rule = assessment.conflict_revisit.rule.replace('comparison_input.sections', 'the hydrated comparison.current sections');
+        return { ...contracts.owners.decision.schema, comparison_contract: { schema: DECISION_ASSESSMENT_CONTRACT, ...assessment, reuse_rule: 'Resolve sections_ref only from complete actual sections still in the caller context. If unavailable, omit knownCurrent and compare again before judging.' } };
     }
     if (command === 'schema')
         return contracts.owners[kind]?.schema ?? { capability: contracts.capabilities[kind] };
@@ -52,13 +58,14 @@ export async function kindCommand(bobbin: Bobbin, kind: Kind, command: string, w
                 facets.push([key.replaceAll('-', '_'), flags[key]]);
         return bobbin.recall({ areas: [kind], includeArchive: kind === 'archive', query: flags.query ?? '', facets, includeHistory: !!flags['include-history'], limit: number('limit'), pack: command === 'brief' || flags.pack, readIds: list(flags.id), sections: list(flags.section), maxBytes: number('max-bytes') });
     }
-    if (kind === 'decision' && ['check', 'conflicts'].includes(command)) {
+    if (kind === 'decision' && ['check', 'conflicts', 'compare'].includes(command)) {
         const knownCurrent = flags['known-current'] === undefined ? undefined : list(flags['known-current']).map((value: string) => {
             const separator = value.indexOf(':');
             check(separator > 0, 'usage_invalid', 'Use --known-current ID:SHA256 once per retained Current body.');
             return { id: value.slice(0, separator), sha256: value.slice(separator + 1) };
         });
-        return bobbin.checkDecision({ statement: flags.statement ?? flags['decision-key'], scope: flags.scope, decisionKey: flags['decision-key'], rationale: flags.rationale, query: flags.query, limit: number('limit'), knownCurrent });
+        const options = { statement: flags.statement ?? flags['decision-key'], scope: flags.scope, decisionKey: flags['decision-key'], rationale: flags.rationale, query: flags.query, limit: number('limit'), knownCurrent };
+        return command === 'compare' ? bobbin.compareDecision(options) : bobbin.checkDecision(options);
     }
     if (kind === 'decision' && command === 'spec-view')
         return bobbin.specView(flags.scope, number('max-bytes'));

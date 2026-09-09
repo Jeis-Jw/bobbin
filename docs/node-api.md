@@ -1,6 +1,6 @@
 # Node.js core and CLI
 
-Bobbin 2.2.0 provides a reusable TypeScript core. One `@bobbin/context`
+Bobbin 2.3.0 provides a reusable TypeScript core. One `@bobbin/context`
 package contains the core, compiled CLI, type declarations and agent entrypoints.
 It needs Node.js **20.20.0 or newer**. It has no runtime dependencies, native addons,
 Python, Electron, Git, plugin-installation or network requirements.
@@ -15,13 +15,13 @@ npm run test:compat           # optional development comparison: Python 3.13
 npm pack --pack-destination /path/to/packages
 
 # In an independent consumer. This installs the tarball, not a checkout symlink.
-npm install /path/to/packages/bobbin-context-2.2.0.tgz
+npm install /path/to/packages/bobbin-context-2.3.0.tgz
 npx --no-install bobbin init --vault /path/to/existing/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/existing/vault --query 'storage'
 ```
 
 A global CLI install from the same tarball is also supported:
-`npm install --global /path/to/packages/bobbin-context-2.2.0.tgz`.
+`npm install --global /path/to/packages/bobbin-context-2.3.0.tgz`.
 This document does not imply a package has been published to npm.
 
 The plugin checkout ships compiled `plugins/bobbin/dist/` so loading the plugin
@@ -196,3 +196,32 @@ semantic payloads into these inputs, preserve previews until approval, handle
 conflict/re-preview results, implement its own IPC/UI, and include the package in
 its release build. A record's type does not define its applicability to a Bureau
 agent or task. This port does not modify Bureau or choose those product semantics.
+
+## Scoped decision comparison
+
+Prefer `search('decision', {query, scope})` when coordinates are unknown, then
+`compareDecision({statement, scope, decisionKey, rationale?, query?, limit?, knownCurrent?})`.
+CLI: `decision search --query <term> --scope <scope>` then
+`decision compare --statement <choice> --scope <scope> --decision-key <key>`.
+Skip search when coordinates are known, and reuse a still-valid comparison instead of adding a call.
+Search is metadata-only; an empty result is not proof of absence and must not automatically widen the search.
+
+`DecisionCompareOptions` requires scope and decisionKey. Compare selects only exact/ancestor/descendant scopes.
+Same-key exact and overlapping slots are mandatory; other bodies need distinctive metadata matches
+within that scoped corpus. Scope alone never admits an optional body. Limits remain 8 records by default,
+12 maximum, 24 KiB hydrated comparison and 32 KiB response; mandatory overflow fails rather than truncating.
+
+The single `context-decision-compare/v1` envelope has `coverage:exact_slot`, `comparison`
+(schema `context-decision-comparison-delta/v1`, proposal and current), `deterministic` mandatory IDs,
+`current_links`, `retrieval`, `warnings`, `assessment_contract_ref`, `hydrated_input_digest`,
+`transport_digest` and `physical_write:false`. `retrieval.total_current` is vault-wide;
+`scoped_current`, `outside_scope`, `omitted` and `full_scoped_set` distinguish scoped coverage from global absence.
+`body_reads` counts actual selected file reads, including optional bodies excluded by the byte budget.
+The assessment contract is available in `decision schema` as `comparison_contract`; load it once if the skill
+is not already available. Never infer semantic identity or approval from metadata, references or digests.
+
+`knownCurrent` uses the existing at-most-12 ID/full-file-SHA hints. Only held complete actual sections may be
+referenced. Changed/new records return bodies. Omit hints after partial reads, context loss or handoff.
+Hydrate references and change the comparison schema to `context-decision-comparison-input/v1` before
+checking `hydrated_input_digest`; `transport_digest` hashes the literal `comparison`. Legacy `checkDecision`
+and `decision check` retain their selection policy and full/delta schemas through the shared implementation.

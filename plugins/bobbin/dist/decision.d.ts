@@ -13,5 +13,12 @@ export interface DecisionCheckOptions {
         sha256: string;
     }[];
 }
+export interface DecisionCompareOptions extends DecisionCheckOptions {
+    scope: string;
+    decisionKey: string;
+}
+export declare const DECISION_ASSESSMENT_CONTRACT = "context-decision-assessment/v1";
+export declare function decisionAssessmentContract(withRevisit?: boolean): ObjectValue;
 export declare function prepareDecisionCheck(root: string, options: DecisionCheckOptions): ObjectValue;
+export declare function prepareDecisionCompare(root: string, options: DecisionCompareOptions): ObjectValue;
 export declare function decisionSpecView(root: string, scope: string, maxBytes?: number): ObjectValue;

@@ -14,7 +14,7 @@ Bobbin 2.1.1의 설치·설정은 단일 `$bobbin:init`을 사용한다. 아래 
 - source: `Jeis-Jw/bobbin`
 - protocol: `context-common/v2`
 
-`schema`, `capabilities`, `check`, `search`, `read`, `brief`, `spec-view`, `conflicts`, `revisit`는 core 없이 호출할 수 있다. 저수준 write pipeline은 compatibility mode로 `--host`, `--core-inventory @file`, `--core-doctor @file`을 받는다. 일반 workflow와 init은 같은 Bobbin 패키지에 포함된 core의 entrypoint path·SHA-256 pin을 먼저 확인한 뒤 schema와 doctor를 직접 handshake한다. `doctor.repository_state=absent`는 bootstrap-required state이고 partial/invalid diagnostics는 전역 차단하지 않는다. decision owner는 install, enable, update, marketplace add, cache probing 또는 별도 runtime 복제를 수행하지 않는다.
+`schema`, `capabilities`, `compare`, `check`, `search`, `read`, `brief`, `spec-view`, `conflicts`, `revisit`는 core 없이 호출할 수 있다. 저수준 write pipeline은 compatibility mode로 `--host`, `--core-inventory @file`, `--core-doctor @file`을 받는다. 일반 workflow와 init은 같은 Bobbin 패키지에 포함된 core의 entrypoint path·SHA-256 pin을 먼저 확인한 뒤 schema와 doctor를 직접 handshake한다. `doctor.repository_state=absent`는 bootstrap-required state이고 partial/invalid diagnostics는 전역 차단하지 않는다. decision owner는 install, enable, update, marketplace add, cache probing 또는 별도 runtime 복제를 수행하지 않는다.
 
 ## Semantic claim gate
 
@@ -34,7 +34,7 @@ canonical 필수 section은 `Decision`, `Rationale`, `Rejected alternatives`다.
 
 `scope`는 trim → NFKC+casefold → leading/trailing slash 제거 → segment별 non-alnum run을 `-`로 변환한다. empty segment, `.`/`..`, segment 40자 초과, 8 segment 초과와 전체 160자 초과는 실패한다. `decision_key`는 같은 변환을 사용하고 `/`, empty와 80자 초과를 거부한다. ancestor는 canonical segment 배열의 strict prefix이며 문자열 prefix나 equality가 아니다.
 
-Current에는 `(scope, decision_key)`당 DEC가 최대 하나다. 같은 key의 ancestor/descendant scope는 overlap conflict이며 모든 conflict ID에 대한 acknowledgement와 `{id,path,sha256}` exact read precondition이 있어야 한다. 의미상 동일한 결정은 fingerprint로 판정하지 않는다. 사전 `check`가 제공한 실제 본문을 agent가 비교하고 `same`이면 기존 DEC를 재사용한다.
+Current에는 `(scope, decision_key)`당 DEC가 최대 하나다. 같은 key의 ancestor/descendant scope는 overlap conflict이며 모든 conflict ID에 대한 acknowledgement와 `{id,path,sha256}` exact read precondition이 있어야 한다. 의미상 동일한 결정은 fingerprint로 판정하지 않는다. 사전 `compare`가 제공한 실제 본문을 agent가 비교하고 `same`이면 기존 DEC를 재사용한다.
 
 ## Owner result와 lifecycle
 
@@ -81,7 +81,7 @@ inline `--sec-*`는 plain literal을 기본으로 하고 explicit `@file`과 lea
 
 `spec-view --scope <scope>`는 Stage 1의 Current metadata에서 canonical scope가 exact이거나 strict ancestor·descendant인 DEC만 선별한다. 문자열 prefix는 scope 관계가 아니다. 선택된 실제 본문의 canonical `Decision`·`Rationale`만 `(created_at,id)` 오름차순으로 반환한다. 기존 `결정`·`취지` heading은 legacy read alias로 받아 canonical 영어 key로 projection하며 저장된 heading을 자동 변경하지 않는다. History와 `do_not_follow`는 제외한다. JSON envelope와 마지막 newline을 포함한 실제 CLI stdout UTF-8는 최대 32 KiB이며 상한을 넘으면 같은 deterministic 순서의 뒤쪽 DEC를 항목 전체로 생략하고 exact `omitted_count`를 반환한다. section 중간 절단, approval, 저장과 write는 없고 매 호출 index와 실제 본문에서 재생성한다.
 
-`check`는 `--scope`와 `--decision-key`를 둘 다 주거나 둘 다 생략한다. 하나만 주면 `usage_invalid`다. 좌표를 알면 exact check를 한 번만 실행한다. exact pair는 `coverage:exact_slot`이고 exact slot과 scope overlap을 반드시 포함한다. 둘 다 생략하면 lexical-only `coverage:discovery_only`와 exact caveat `no-conflict cannot be concluded; re-run with exact scope/decision_key before preview`를 반환한다. 그 밖의 후보는 statement·rationale·query와 title·summary·search terms의 distinctive metadata match만 선택하며 score 0의 임의 body는 열지 않는다. comparison input은 24 KiB, 전체 result는 32 KiB다. 선택 item은 실제 `Decision`, `Rationale`, `Rejected alternatives`와 비어 있지 않은 `Revisit conditions`를 `sections` 아래 반환하며 top-level revisit 복제는 없다. 같은 turn에서는 이 section을 다시 읽지 않고 재사용한다. agent는 `new|same|supporting|rationale_changed|conflict` 중 하나와 근거·관련 ID를 제시하되 discovery-only에서 무충돌을 확정하지 않는다. 이 operation은 read-only이고 지문·문장 유사도로 의미를 확정하지 않는다.
+`check`는 `--scope`와 `--decision-key`를 둘 다 주거나 둘 다 생략한다. 하나만 주면 `usage_invalid`다. 이 문단은 기존 호환 어댑터의 계약이다. 새 호출은 아래 범위 제한 비교 흐름을 사용한다. exact pair는 `coverage:exact_slot`이고 exact slot과 scope overlap을 반드시 포함한다. 둘 다 생략하면 lexical-only `coverage:discovery_only`와 exact caveat `no-conflict cannot be concluded; re-run with exact scope/decision_key before preview`를 반환한다. 그 밖의 후보는 statement·rationale·query와 title·summary·search terms의 distinctive metadata match만 선택하며 score 0의 임의 body는 열지 않는다. comparison input은 24 KiB, 전체 result는 32 KiB다. 선택 item은 실제 `Decision`, `Rationale`, `Rejected alternatives`와 비어 있지 않은 `Revisit conditions`를 `sections` 아래 반환하며 top-level revisit 복제는 없다. 같은 turn에서는 이 section을 다시 읽지 않고 재사용한다. agent는 `new|same|supporting|rationale_changed|conflict` 중 하나와 근거·관련 ID를 제시하되 discovery-only에서 무충돌을 확정하지 않는다. 이 operation은 read-only이고 지문·문장 유사도로 의미를 확정하지 않는다.
 
 `rationale_changed|conflict`는 primary 결론 전에 반환된 비어 있지 않은 실제 Decision, Rationale, Rejected alternatives, Revisit conditions section을 모두 원문으로 인용한다. 영향받는 행동을 보류하고 keep이면 수행하지 않고 supersede면 그 명시적 선택 뒤에만 진행하는 두 선택지를 모두 제시해 하나의 명시적 양자 질문을 한다. 선택한 Revisit token을 `satisfied|no evidence|ambiguous` 중 하나로 user response에 그대로 쓰며 근거를 발명하지 않는다. `satisfied`는 사용자가 저장된 조건을 직접 성립시키는 현재 사실을 제공한 경우에만 쓰며 요청된 충돌 행동 자체는 근거가 아니다. 사실이 없거나 저장 조건이 아닌 다른 쟁점에 관한 사실이면 `no evidence`다. 저장 조건에 관한 사용자 사실이 관련은 있지만 불완전하거나 서로 충돌할 때만 `ambiguous`다. 조건 충족은 재평가 권한이지 구현 권한이 아니다. 명시적 선택은 해당 decision payload를 확정하고 별도 저장 질문 없이 capture를 승인한다.
 
@@ -100,3 +100,29 @@ Discovery는 기존 frequency cutoff(Current의 1/4을 올림한 상한)로 corp
 ## One-call record
 
 `decision_workflow.mjs record`는 같은 `preview`와 같은 `apply`를 변경 없는 frozen receipt에 대해 한 프로세스 안에서 실행한다. caller는 사용자의 직접적·명시적·무조건적 semantic approval 뒤에만 `--approved`를 준다. `approval_digest`, 결박된 core SHA, vault identity, CAS, lock, atomic write는 2단계 경로와 동일하게 내부에서 결박되며 성공 시 receipt는 `--keep-receipt`가 없으면 제거된다. `--supersede`와 `--withdraw`는 `record`에서도 동일하다. `preview`, `apply`, `record`의 `--core-cli`는 선택이다. 같은 major의 manifest 검증된 sibling `context-core`가 정확히 하나일 때만 결정적으로 해석하고, 0개 또는 여러 개면 `core_cli_required`와 후보 목록으로 fail closed한다. 2단계 `preview`·`apply`는 orchestration용으로 유지된다.
+
+## 범위를 지정한 결정 비교
+
+좌표를 모르면 `search('decision', {query, scope})`로 메타데이터를 찾고
+`compareDecision({statement, scope, decisionKey, rationale?, query?, limit?, knownCurrent?})`로 비교한다.
+CLI는 `decision search --query <검색어> --scope <scope>` 뒤
+`decision compare --statement <선택> --scope <scope> --decision-key <key>`다.
+좌표나 유효한 비교 결과를 알고 있으면 불필요한 호출을 생략한다. 빈 검색 결과를 무충돌로
+판단하거나 전역 검색으로 자동 확대하지 않는다.
+
+`DecisionCompareOptions`의 scope와 decisionKey는 필수다. 같은 scope와 상·하위 scope에서
+같은 key의 필수 대상을 모두 포함하고, 선택적 본문은 그 범위에서 구별되는 메타데이터 일치가 있어야 한다.
+범위만 같으면 본문을 읽지 않는다. 기본 8개·최대 12개, 복원된 비교 입력 24 KiB·응답 32 KiB 제한을
+유지하며 필수 본문 초과는 생략 대신 실패한다.
+
+단일 `context-decision-compare/v1` 응답은 `coverage:exact_slot`, `comparison`(proposal/current),
+`deterministic`, `current_links`, `retrieval`, `warnings`, `assessment_contract_ref`, 두 digest와
+`physical_write:false`를 반환한다. `total_current`는 전체, `scoped_current`·`outside_scope`·`omitted`·
+`full_scoped_set`는 범위 제한을 설명한다. `body_reads`는 byte 제한으로 빠진 선택적 본문까지 실제 읽기를 센다.
+정적 판단 계약은 `decision schema`의 `comparison_contract`에 있으며 skill이 없으면 먼저 한 번 읽는다.
+
+`knownCurrent`는 기존 ID·전체 파일 SHA 힌트(최대 12개)를 재사용한다. 현재 context에 완전한 실제 section이
+남은 기록만 참조로 받을 수 있다. 변경·신규 본문은 반환하고 부분 read·맥락 소실·handoff 뒤에는 힌트를 생략한다.
+`comparison`의 `sections_ref`를 복원하고 schema를 `context-decision-comparison-input/v1`으로 바꾼 값이
+`hydrated_input_digest` 대상이다. `transport_digest`는 실제 `comparison`을 해시한다.
+기존 `checkDecision`·`decision check`의 후보 선택과 full/delta 형식은 공통 구현의 호환 경로로 유지한다.

@@ -1,6 +1,6 @@
 # Decision capture policy
 
-Run only on core's choice signal. Reuse Current while scope, anchor, and actual body remain. With known scope/key, run one exact-slot `check`; otherwise discover. Reuse returned actual Decision, Rationale, Rejected alternatives, and non-empty Revisit conditions that turn without another context read.
+Run only on core's choice signal. Reuse Current while scope, anchor, and actual body remain. With known scope/key, run one exact-slot `compare`; otherwise use metadata-only `search`, scoped when known. Never automatically widen an empty search to a global one. Reuse returned actual Decision, Rationale, Rejected alternatives, and non-empty Revisit conditions that turn without another context read.
 
 Classify `new|same|supporting|rationale_changed|conflict` by meaning, not hash/ID/metadata. Reuse `same|supporting` quietly. Before conclusion, quote each returned non-empty actual Decision, Rationale, Rejected alternatives, and Revisit conditions section. State the revisit token verbatim: `satisfied|no evidence|ambiguous`. `satisfied` needs facts establishing the stored condition; the requested conflicting action is not evidence. `no evidence` means no facts or another concern; `ambiguous` means relevant facts incomplete/conflicting.
 

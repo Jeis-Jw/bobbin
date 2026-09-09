@@ -1,7 +1,7 @@
 import { ObjectValue } from './common';
 import { Kind, ContextDocument } from './documents';
 import { Candidate, Attestation, DraftOptions } from './owners';
-import { DecisionCheckOptions } from './decision';
+import { DecisionCheckOptions, DecisionCompareOptions } from './decision';
 import { CandidateBatch } from './routing';
 export type ApprovalMode = 'explicit' | 'auto' | 'adaptive';
 export type Feature = 'decision' | 'assumption' | 'term' | 'intent' | 'document';
@@ -164,6 +164,7 @@ export declare class Bobbin {
     refresh(fix?: boolean): Promise<ObjectValue>;
     recall(options?: RecallOptions): Promise<ObjectValue>;
     search(kind: Kind, options?: SearchOptions): Promise<ObjectValue>;
+    compareDecision(options: DecisionCompareOptions): Promise<ObjectValue>;
     checkDecision(options: DecisionCheckOptions): Promise<ObjectValue>;
     specView(scope: string, maxBytes?: number): Promise<ObjectValue>;
     revisitDecisions(options?: {

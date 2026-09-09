@@ -8,7 +8,7 @@ export type { Kind, ContextDocument } from './documents';
 export { BobbinError, canonicalJson, canonicalDigest, normalizedKey, fileBytes, newId, PROTOCOL, VERSION, EXIT } from './common';
 export type { Json } from './common';
 export { deriveSearchTerms } from './decision';
-export type { DecisionCheckOptions } from './decision';
+export type { DecisionCheckOptions, DecisionCompareOptions } from './decision';
 export { draftOwnerResult, declineOwnerResult, validateCandidateBatch, validateOwnerResult, operationFromOwnerResult, routeCandidates } from './routing';
 export type { CandidateBatch } from './routing';
 export { UNICODE_VERSION } from './unicode';

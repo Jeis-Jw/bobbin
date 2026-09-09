@@ -15,7 +15,7 @@ Bobbin 2.1.1 uses one package and one `$bobbin:init` entrypoint. User-approval i
 - protocol: `context-common/v2`
 - core entrypoint suffix: `skills/context/scripts/context_cli.mjs`
 
-`schema`, `capabilities`, `check`, `search`, `read`, `brief`, `spec-view`, `conflicts`, and `revisit` are core-free. Write-pipeline operations retain caller `--host`, `--core-inventory @file`, and `--core-doctor @file` as compatibility input.
+`schema`, `capabilities`, `compare`, `check`, `search`, `read`, `brief`, `spec-view`, `conflicts`, and `revisit` are core-free. Write-pipeline operations retain caller `--host`, `--core-inventory @file`, and `--core-doctor @file` as compatibility input.
 
 Canonical init and workflow first validate the absolute core entrypoint path suffix, matching adjacent Claude/Codex manifests, and the compatible major, then bind the actual SHA-256 for the operation. Before executing further subprocess work they directly validate `context-core-schema/v1`, `context-common/v2`, required doctor/bootstrap/transaction commands, `context-owner-descriptor/v2`, `filesystem-vault/v1`, and the exact doctor shape/state. This executable handshake does not attest marketplace provenance, source, scope, or enabled state.
 
@@ -78,7 +78,7 @@ Inline `--sec-*` values are literal by default. `@file` reads a named regular UT
 
 `search` reads decision index metadata. `read` and `brief` open selected DEC bodies only. Brief includes the three required sections and is at most 8 KiB. History always carries `do_not_follow:true` and a lifecycle reason.
 
-`check` accepts either both `--scope` and `--decision-key` or neither; a partial pair is `usage_invalid`. When coordinates are known, make one exact check. The exact pair yields `coverage:exact_slot`, always includes exact-slot and scope-overlap candidates, then adds only distinctive metadata matches. Omitting both yields lexical-only `coverage:discovery_only` plus the exact caveat `no-conflict cannot be concluded; re-run with exact scope/decision_key before preview`. It never opens arbitrary score-zero bodies. Comparison input is at most 24 KiB and the complete result at most 32 KiB. Each selected item returns actual `Decision`, `Rationale`, `Rejected alternatives`, plus non-empty `Revisit conditions` under `sections`; there is no top-level revisit duplicate. Reuse these sections in the turn without another read. The agent returns `new|same|supporting|rationale_changed|conflict`; `new` is bounded to the returned set and discovery-only cannot establish no conflict.
+`check` accepts either both `--scope` and `--decision-key` or neither; a partial pair is `usage_invalid`. This section describes the legacy compatibility adapter; use the scoped comparison flow below for new callers. The exact pair yields `coverage:exact_slot`, always includes exact-slot and scope-overlap candidates, then adds only distinctive metadata matches. Omitting both yields lexical-only `coverage:discovery_only` plus the exact caveat `no-conflict cannot be concluded; re-run with exact scope/decision_key before preview`. It never opens arbitrary score-zero bodies. Comparison input is at most 24 KiB and the complete result at most 32 KiB. Each selected item returns actual `Decision`, `Rationale`, `Rejected alternatives`, plus non-empty `Revisit conditions` under `sections`; there is no top-level revisit duplicate. Reuse these sections in the turn without another read. The agent returns `new|same|supporting|rationale_changed|conflict`; `new` is bounded to the returned set and discovery-only cannot establish no conflict.
 
 For `rationale_changed|conflict`, quote every returned non-empty actual Decision, Rationale, Rejected alternatives, and Revisit conditions section before the primary conclusion. Hold the affected action and ask one explicit binary question offering both choices: keep means it is not performed; supersede permits it only after that explicit choice. State the selected Revisit token verbatim as `satisfied|no evidence|ambiguous` without invented evidence. `satisfied` requires user-supplied present facts that directly establish the stored condition; the requested conflicting action itself is not evidence. Facts that are absent or concern something other than the stored condition mean `no evidence`. Use `ambiguous` only when user-supplied facts about the stored condition are relevant but incomplete or conflicting. A satisfied condition authorizes reassessment, not implementation. The explicit choice settles that decision payload and authorizes capture without a second storage question.
 
@@ -97,3 +97,32 @@ Discovery keeps the existing frequency cutoff (at most one quarter of Current, r
 ## One-call record
 
 `decision_workflow.mjs record` runs the same `preview` and then the same `apply` on the unchanged frozen receipt inside one process. The caller passes `--approved` only after the user's direct, explicit, unconditional semantic approval in conversation; `approval_digest`, the pinned core SHA, vault identity, CAS, lock, and atomic write are bound internally exactly as in the two-phase path, and the receipt is removed on success unless `--keep-receipt` is set. `--supersede` and `--withdraw` work with `record` as with `preview`. `--core-cli` is optional for `preview`, `apply`, and `record`: exactly one same-major, manifest-validated sibling `context-core` is resolved deterministically; zero or several candidates fail closed with `core_cli_required` and the candidate list. The two-phase `preview` and `apply` commands remain for orchestration.
+
+## Scoped decision comparison
+
+Prefer `search('decision', {query, scope})` when coordinates are unknown, then
+`compareDecision({statement, scope, decisionKey, rationale?, query?, limit?, knownCurrent?})`.
+CLI: `decision search --query <term> --scope <scope>` then
+`decision compare --statement <choice> --scope <scope> --decision-key <key>`.
+Skip search when coordinates are known, and reuse a still-valid comparison instead of adding a call.
+Search is metadata-only; an empty result is not proof of absence and must not automatically widen the search.
+
+`DecisionCompareOptions` requires scope and decisionKey. Compare selects only exact/ancestor/descendant scopes.
+Same-key exact and overlapping slots are mandatory; other bodies need distinctive metadata matches
+within that scoped corpus. Scope alone never admits an optional body. Limits remain 8 records by default,
+12 maximum, 24 KiB hydrated comparison and 32 KiB response; mandatory overflow fails rather than truncating.
+
+The single `context-decision-compare/v1` envelope has `coverage:exact_slot`, `comparison`
+(schema `context-decision-comparison-delta/v1`, proposal and current), `deterministic` mandatory IDs,
+`current_links`, `retrieval`, `warnings`, `assessment_contract_ref`, `hydrated_input_digest`,
+`transport_digest` and `physical_write:false`. `retrieval.total_current` is vault-wide;
+`scoped_current`, `outside_scope`, `omitted` and `full_scoped_set` distinguish scoped coverage from global absence.
+`body_reads` counts actual selected file reads, including optional bodies excluded by the byte budget.
+The assessment contract is available in `decision schema` as `comparison_contract`; load it once if the skill
+is not already available. Never infer semantic identity or approval from metadata, references or digests.
+
+`knownCurrent` uses the existing at-most-12 ID/full-file-SHA hints. Only held complete actual sections may be
+referenced. Changed/new records return bodies. Omit hints after partial reads, context loss or handoff.
+Hydrate references and change the comparison schema to `context-decision-comparison-input/v1` before
+checking `hydrated_input_digest`; `transport_digest` hashes the literal `comparison`. Legacy `checkDecision`
+and `decision check` retain their selection policy and full/delta schemas through the shared implementation.

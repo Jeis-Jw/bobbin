@@ -6,18 +6,18 @@
   "metadata": {
     "release_set": {
       "schema": "context-plugin-release-set/v1",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "runtime_compatibility": "single-package",
       "automatic_update": false,
       "members": {
-        "bobbin": "2.2.0"
+        "bobbin": "2.3.0"
       }
     }
   },
   "plugins": [
     {
       "name": "bobbin",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "description": "Keep the thread: durable project context with project-selected features and recording policies.",
       "source": {
         "source": "local",
