@@ -56,8 +56,14 @@ async function kindCommand(bobbin, kind, command, words, flags) {
                 facets.push([key.replaceAll('-', '_'), flags[key]]);
         return bobbin.recall({ areas: [kind], includeArchive: kind === 'archive', query: flags.query ?? '', facets, includeHistory: !!flags['include-history'], limit: number('limit'), pack: command === 'brief' || flags.pack, readIds: (0, cli_input_1.list)(flags.id), sections: (0, cli_input_1.list)(flags.section), maxBytes: number('max-bytes') });
     }
-    if (kind === 'decision' && ['check', 'conflicts'].includes(command))
-        return bobbin.checkDecision({ statement: flags.statement ?? flags['decision-key'], scope: flags.scope, decisionKey: flags['decision-key'], rationale: flags.rationale, query: flags.query, limit: number('limit') });
+    if (kind === 'decision' && ['check', 'conflicts'].includes(command)) {
+        const knownCurrent = flags['known-current'] === undefined ? undefined : (0, cli_input_1.list)(flags['known-current']).map((value) => {
+            const separator = value.indexOf(':');
+            (0, common_1.check)(separator > 0, 'usage_invalid', 'Use --known-current ID:SHA256 once per retained Current body.');
+            return { id: value.slice(0, separator), sha256: value.slice(separator + 1) };
+        });
+        return bobbin.checkDecision({ statement: flags.statement ?? flags['decision-key'], scope: flags.scope, decisionKey: flags['decision-key'], rationale: flags.rationale, query: flags.query, limit: number('limit'), knownCurrent });
+    }
     if (kind === 'decision' && command === 'spec-view')
         return bobbin.specView(flags.scope, number('max-bytes'));
     if (kind === 'decision' && command === 'revisit')

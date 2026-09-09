@@ -68,6 +68,15 @@ function prepareDecisionCheck(root, options) {
     const limit = options.limit ?? 8, statement = (0, common_1.shortText)(options.statement, 'statement', 1200, true), rationale = options.rationale?.trim() ?? '', query = options.query?.trim() ?? '';
     (0, common_1.check)(limit >= 1 && limit <= 12, 'usage_invalid', 'Check limit must be in 1..12.');
     (0, common_1.check)((options.scope === undefined) === (options.decisionKey === undefined), 'usage_invalid', 'Provide both scope and decisionKey, or neither.');
+    const known = new Map();
+    if (options.knownCurrent !== undefined) {
+        (0, common_1.check)(Array.isArray(options.knownCurrent) && options.knownCurrent.length <= 12, 'usage_invalid', 'knownCurrent must be an array of at most 12 {id, sha256} entries.');
+        for (const hint of options.knownCurrent) {
+            (0, common_1.check)(hint && !Array.isArray(hint) && Object.keys(hint).length === 2 && Object.hasOwn(hint, 'id') && Object.hasOwn(hint, 'sha256') && typeof hint.id === 'string' && /^ctx_[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/.test(hint.id) && typeof hint.sha256 === 'string' && /^(?:sha256:)?[0-9a-f]{64}$/.test(hint.sha256), 'usage_invalid', 'Each knownCurrent entry needs a canonical record ID and lowercase file SHA-256 (optional sha256: prefix); CLI: --known-current ID:SHA256.');
+            (0, common_1.check)(!known.has(hint.id), 'usage_invalid', 'knownCurrent IDs must be unique; provide each --known-current ID:SHA256 only once.');
+            known.set(hint.id, hint.sha256.startsWith('sha256:') ? hint.sha256 : 'sha256:' + hint.sha256);
+        }
+    }
     if (rationale)
         (0, common_1.shortText)(rationale, 'rationale', 1200, true);
     if (query)
@@ -154,6 +163,25 @@ function prepareDecisionCheck(root, options) {
     if (!exact)
         result.caveat = 'no-conflict cannot be concluded; re-run with exact scope/decision_key before preview';
     (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(result)) <= 32768, 'comparison_too_large', 'Decision check exceeds its output byte limit.', {}, common_1.EXIT.conflict);
+    if (options.knownCurrent !== undefined) {
+        // Reuse only changes transport after fresh full bodies pass every existing gate.
+        const delta = { schema: 'context-decision-comparison-delta/v1', proposal, current: current.map(record => {
+                if (known.get(record.id) !== record.sha256)
+                    return record;
+                const { sections, ...metadata } = record;
+                return { ...metadata, sections_ref: { id: record.id, sha256: record.sha256 } };
+            }) };
+        result.schema = 'context-decision-check-delta/v1';
+        result.comparison_delta = delta;
+        result.hydrated_input_digest = result.input_digest;
+        result.transport_digest = (0, common_1.canonicalDigest)(delta);
+        delete result.comparison_input;
+        delete result.input_digest;
+        assessment.rule = 'Resolve every sections_ref from the complete actual sections still in caller context; if unavailable, repeat without knownCurrent/--known-current before judging. ' + assessment.rule.replaceAll('returned', 'returned or retained');
+        if (assessment.conflict_revisit)
+            assessment.conflict_revisit.rule = assessment.conflict_revisit.rule.replace('comparison_input.sections', 'the hydrated comparison sections');
+        (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(result)) <= 32768, 'comparison_too_large', 'Decision check delta exceeds its output byte limit.', {}, common_1.EXIT.conflict);
+    }
     return result;
 }
 function decisionSpecView(root, scope, maxBytes = 32768) {

@@ -31,6 +31,16 @@ node /loaded/bobbin/skills/decision/scripts/decision_cli.mjs read '<predecessor-
 
 질문에 필요한 section만 빠졌다면 `read '<id>' --section 'Rationale' --json`처럼 그 부분만 읽는다. 선택을 비교할 때는 Decision, Rationale, Rejected alternatives와 비어 있지 않은 Revisit conditions를 생략하지 않는다. 존재가 확인된 section만 선택하며 `--section`을 생략하면 실제 section 전체를 읽는다. byte 제한 결과의 `truncated:true`는 불완전한 본문이므로 전체 비교 근거로 쓰지 않는다.
 
+discovery → exact slot처럼 추가 check가 필요할 때는 `--known-current '<id>:<반환된-sha256>'`를 반복해 보유한 본문의 재출력을 줄인다(서로 다른 ID 최대 12개). 반환된 `sha256:` 접두사까지 그대로 복사한다. 해당 기록의 실제 비교 section 전체가 같은 scope/anchor context에 남아 있을 때만 전달한다. 부분 read, context 소실 또는 handoff 뒤에는 flag를 생략해 전체 본문을 받는다. 재사용을 활성화하려고 check를 추가하지 않는다.
+
+```bash
+node /loaded/bobbin/skills/decision/scripts/decision_cli.mjs check \
+  --statement '<형성되거나 바뀌는 선택>' --scope '<scope>' --decision-key '<key>' \
+  --known-current '<current-id>:<반환된-sha256>' --json
+```
+
+이 옵션은 `context-decision-check-delta/v1`을 반환한다. `comparison_delta.current`에서 파일이 변하지 않은 기록만 `sections_ref:{id,sha256}`로 표시하며, 비교·인용 전에 보유한 실제 section으로 복원한다. proposal·path·선택 이유·`current_links`는 최신 값이며 변경되거나 새로 생긴 Current는 section을 반환한다. `hydrated_input_digest`는 완전한 비교 입력, `transport_digest`는 출력한 `comparison_delta`의 digest다. 둘 다 의미나 승인을 증명하지 않는다. disk read와 전체 의미 입력·출력 제한은 유지된다. flag가 없으면 기존 `comparison_input`과 전체 section을 그대로 반환한다.
+
 ## Capture
 
 공통 기록 정책을 따른다. Host inventory나 core doctor를 미리 실행하지 않는다. 사용자 승인에는 `record --approved`, 정책 승인에는 `record --approval-source policy`를 같은 응답에서 한 번 실행한다. adaptive는 record/ask 판정과 이유도 전달한다. internal preview가 동결한 receipt와 `approval_digest`를 변경 없이 apply한다. transport detail은 노출하거나 요구하지 않는다. semantic delta나 slot conflict면 write를 보류하고 그 차이만 확인한다. 승인 뒤 재생성하지 않는다. 성공 출력이 확인이며 이후 다시 읽지 않는다.

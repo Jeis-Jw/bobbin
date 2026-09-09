@@ -92,6 +92,7 @@
     "candidate-id": "value",
     "scope": "value",
     "decision-key": "value",
+    "known-current": "value",
     "commitment-evidence": "value",
     "sec-decision": "value",
     "sec-rationale": "value",

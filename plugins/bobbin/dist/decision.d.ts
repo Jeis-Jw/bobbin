@@ -8,6 +8,10 @@ export interface DecisionCheckOptions {
     rationale?: string;
     query?: string;
     limit?: number;
+    knownCurrent?: {
+        id: string;
+        sha256: string;
+    }[];
 }
 export declare function prepareDecisionCheck(root: string, options: DecisionCheckOptions): ObjectValue;
 export declare function decisionSpecView(root: string, scope: string, maxBytes?: number): ObjectValue;

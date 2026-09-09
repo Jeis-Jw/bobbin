@@ -3,6 +3,16 @@
 Bobbin has one public package version. Historical 0.x entries describe Context Plugins release sets, whose component versions could differ. Source preparation, tags and publication remain separate states.
 
 
+## 2.2.0 — Opt-in decision body reuse — 2026-09-09
+
+- Add `knownCurrent` and repeated `--known-current ID:SHA256` hints for callers
+  retaining complete actual DEC sections. Unchanged bodies return references;
+  changed files and new Current records return fresh sections and lifecycle links.
+- Keep default full output unchanged. Opt-in delta schemas distinguish the emitted
+  transport digest from the hydrated comparison digest, with full reads and limits intact.
+- Verify malformed/stale hints, successor handling, no-write reads and digest
+  reconstruction in the source runtime and installed package; document EN/KO fallback rules.
+
 ## 2.1.1 — Decision guidance and history navigation — 2026-09-09
 
 - Complete DEC supersede examples with same-claim attestation after actual

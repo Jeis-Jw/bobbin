@@ -1,6 +1,6 @@
 # Node.js core and CLI
 
-Bobbin 2.1.1 provides a reusable TypeScript core. One `@bobbin/context`
+Bobbin 2.2.0 provides a reusable TypeScript core. One `@bobbin/context`
 package contains the core, compiled CLI, type declarations and agent entrypoints.
 It needs Node.js **20.20.0 or newer**. It has no runtime dependencies, native addons,
 Python, Electron, Git, plugin-installation or network requirements.
@@ -15,13 +15,13 @@ npm run test:compat           # optional development comparison: Python 3.13
 npm pack --pack-destination /path/to/packages
 
 # In an independent consumer. This installs the tarball, not a checkout symlink.
-npm install /path/to/packages/bobbin-context-2.1.1.tgz
+npm install /path/to/packages/bobbin-context-2.2.0.tgz
 npx --no-install bobbin init --vault /path/to/existing/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/existing/vault --query 'storage'
 ```
 
 A global CLI install from the same tarball is also supported:
-`npm install --global /path/to/packages/bobbin-context-2.1.1.tgz`.
+`npm install --global /path/to/packages/bobbin-context-2.2.0.tgz`.
 This document does not imply a package has been published to npm.
 
 The plugin checkout ships compiled `plugins/bobbin/dist/` so loading the plugin
@@ -99,6 +99,32 @@ CLI → library interoperability with an empty executable search path.
 one writer. `OwnerInputs`, `ReadResult`, `ApplyResult`, `Preview` and
 `BobbinError` are exported with declarations. `schema`/`capabilities` provide
 record field bounds and semantic assertion names at runtime.
+
+`checkDecision({statement, scope?, decisionKey?, knownCurrent?})` accepts an optional
+array of at most 12 unique `{id, sha256}` pairs. Use the file `sha256` returned by a
+previous check, including its `sha256:` prefix (bare lowercase hex is also accepted).
+CLI equivalent: repeat `--known-current '<id>:<returned-sha256>'` on `decision check`.
+The caller must still hold **all actual comparison sections** for each hinted record
+in the same scope/anchor context. Do not create hints from metadata, a partial read,
+or after context loss/handoff; omit the option to receive full bodies. Hash equality
+only permits transport reuse, never a semantic verdict or approval.
+
+Without the option, `context-decision-check/v1` remains unchanged. With it, the result
+uses `context-decision-check-delta/v1` and `comparison_delta` with schema
+`context-decision-comparison-delta/v1`. Each unchanged Current record replaces only
+`sections` with `sections_ref:{id,sha256}`. Changed files, unknown hints and successors
+return actual sections; proposal, path, retrieval reasons and lifecycle links are fresh.
+Malformed or duplicate hints reject with `usage_invalid`. Even an empty array opts in.
+
+Delta results omit `comparison_input` and `input_digest`. `transport_digest` equals
+`canonicalDigest(result.comparison_delta)`. To verify `hydrated_input_digest`, replace
+each `sections_ref` with the matching retained `sections`, change the comparison schema
+to `context-decision-comparison-input/v1`, then call `canonicalDigest` on that complete
+input. If any retained sections are unavailable, repeat without hints before judging.
+Both digests detect content differences; neither authorizes writes. Fresh locked reads,
+mandatory selection, the 24,576-byte full comparison limit and the 32,768-byte full
+result limit still run before projection; the delta result also has the 32,768-byte limit.
+`retrieval.body_reads` and `selected_semantic_bytes` keep their full-check meaning.
 
 SNAP create and update share a 256 KiB (262,144-byte) limit on the compact JSON
 UTF-8 representation of the complete logical input: title, summary, captured source,

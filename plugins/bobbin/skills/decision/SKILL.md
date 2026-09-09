@@ -28,6 +28,16 @@ node /loaded/bobbin/skills/decision/scripts/decision_cli.mjs read '<predecessor-
 
 Read only missing sections when the question needs them, for example `read '<id>' --section 'Rationale' --json`. Do not omit Decision, Rationale, Rejected alternatives, or non-empty Revisit conditions when comparing governing choices. Select only sections known to exist; omitting `--section` reads all actual sections. A byte-limited result with `truncated:true` is incomplete and cannot support a full comparison.
 
+When another check is required, such as discovery → exact slot, avoid reprinting retained bodies with repeated `--known-current '<id>:<returned-sha256>'` (at most 12 unique IDs). Copy the returned `sha256` including its `sha256:` prefix. Supply a hint only while all of that record's actual comparison sections remain in the same scope/anchor context. Partial reads, context loss or a handoff require the full fallback: omit the flag. Do not add a check just to enable reuse.
+
+```bash
+node /loaded/bobbin/skills/decision/scripts/decision_cli.mjs check \
+  --statement '<forming or changing choice>' --scope '<scope>' --decision-key '<key>' \
+  --known-current '<current-id>:<returned-sha256>' --json
+```
+
+This opts into `context-decision-check-delta/v1`: `comparison_delta.current` has `sections_ref:{id,sha256}` only for unchanged files; resolve it from retained actual sections before comparing or quoting. Fresh proposal, paths, reasons and `current_links` remain present; changed or new Current files return sections. `hydrated_input_digest` identifies the full comparison input; `transport_digest` covers the emitted `comparison_delta`. Neither digest proves meaning or approval. Disk reads and full semantic/output limits still apply. Without the flag, `comparison_input` and full sections are unchanged.
+
 ## Capture
 
 Use the shared recording policy. Do not pre-run host inventory or core doctor. Run one `record --approved` for user approval, or `record --approval-source policy` for configured automation; adaptive also requires a record/ask assessment and reason. Internal preview and unchanged apply bind `approval_digest` privately; never expose or request transport details. The result confirms the write: do not re-run `check` afterwards.

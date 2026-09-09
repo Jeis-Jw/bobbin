@@ -2,7 +2,7 @@
 
 하나의 `@bobbin/context` 패키지에 코어, CLI, 타입 선언과 Agent plugin 진입점을
 포함합니다. **Node.js 20.20.0 이상**이 필요합니다. 실행 시 Python, Git, Electron,
-전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.1.1**이며,
+전역 설치나 플러그인 설치가 필요하지 않습니다. 버전은 **2.2.0**이며,
 소스 버전 갱신과 npm 공개 배포는 별개입니다.
 
 호출한 OS 사용자가 쓸 수 있는 로컬 디렉터리를 사용합니다. 읽기에도 공통 잠금이
@@ -16,7 +16,7 @@ npm run test:compat  # 개발용 Python 3.13 비교 검증
 npm pack --pack-destination /path/to/packages
 
 # 독립 소비자에서 실제 tarball 설치
-npm install /path/to/packages/bobbin-context-2.1.1.tgz
+npm install /path/to/packages/bobbin-context-2.2.0.tgz
 npx --no-install bobbin init --vault /path/to/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/vault --query '저장소'
 ```
@@ -43,6 +43,30 @@ const record = await bobbin.read(matches.items[0].id);
 조회에는 실제 본문과 authority/history 표시를 반환합니다. DEC 대체는 새 ID와 양방향
 관계를 만들며, 같은 범위와 결정 키를 유지합니다. SNAP은 재개용이며 DEC와 혼용하지
 않습니다. `batch`는 1–8개 작업을 원자적으로 적용하며, 같은 경로를 두 번 바꾸지는 못합니다.
+
+`checkDecision({statement, scope?, decisionKey?, knownCurrent?})`는 서로 다른 ID 최대
+12개의 `{id, sha256}` 배열을 선택적으로 받습니다. 이전 check의 파일 `sha256` 값을
+`sha256:` 접두사까지 그대로 전달합니다(소문자 hex만 전달해도 허용).
+CLI에서는 `decision check --known-current '<id>:<반환된-sha256>'`를 반복합니다.
+해당 기록의 **실제 비교 section 전체**가 같은 scope/anchor context에 남아 있어야 합니다.
+metadata·부분 read에서 힌트를 만들거나 context 소실·handoff 뒤 재사용하지 말고,
+옵션을 생략해 전체 본문을 받습니다. hash 일치는 전송 재사용만 허용하며 의미 판정이나 승인이 아닙니다.
+
+옵션이 없으면 기존 `context-decision-check/v1`은 그대로입니다. 옵션이 있으면
+`context-decision-check-delta/v1`의 `comparison_delta`를 반환하며 내부 schema는
+`context-decision-comparison-delta/v1`입니다. 변하지 않은 Current만 `sections`를
+`sections_ref:{id,sha256}`로 대체합니다. 변경된 파일, 알 수 없는 힌트와 successor는
+실제 section을 반환하고 proposal·path·선택 이유·lifecycle link는 최신 값을 유지합니다.
+잘못된 힌트나 중복 ID는 `usage_invalid`로 거절합니다. 빈 배열도 delta 출력을 선택합니다.
+
+delta에는 `comparison_input`·`input_digest`가 없습니다. `transport_digest`는
+`canonicalDigest(result.comparison_delta)`입니다. `hydrated_input_digest` 검증은 각
+`sections_ref`를 일치하는 보유 `sections`로 바꾸고 비교 schema를
+`context-decision-comparison-input/v1`으로 되돌린 전체 입력에 `canonicalDigest`를 적용합니다.
+보유 section이 하나라도 없으면 판정 전에 힌트 없이 다시 요청합니다. 두 digest는 내용 차이를
+확인하며 쓰기를 승인하지 않습니다. 잠금 안에서의 최신 본문 읽기, 필수 선택, 전체 비교 입력
+24,576바이트와 전체 결과 32,768바이트 제한은 투영 전에 유지하고 delta 결과도 32,768바이트로
+제한합니다. `retrieval.body_reads`와 `selected_semantic_bytes`는 전체 check의 측정 의미를 유지합니다.
 
 SNAP 생성·갱신에는 전체 논리적 입력(제목·요약·출처·참조·태그·검색어·앵커·렌더링된
 섹션)의 compact JSON UTF-8 크기로 256 KiB(262,144바이트) 상한을 공통 적용합니다.
