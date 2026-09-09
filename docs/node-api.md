@@ -1,6 +1,6 @@
 # Node.js core and CLI
 
-Bobbin 2.0.0 provides a reusable TypeScript core. One `@bobbin/context`
+Bobbin 2.1.0 provides a reusable TypeScript core. One `@bobbin/context`
 package contains the core, compiled CLI, type declarations and agent entrypoints.
 It needs Node.js **20.20.0 or newer**. It has no runtime dependencies, native addons,
 Python, Electron, Git, plugin-installation or network requirements.
@@ -15,13 +15,13 @@ npm run test:compat           # optional development comparison: Python 3.13
 npm pack --pack-destination /path/to/packages
 
 # In an independent consumer. This installs the tarball, not a checkout symlink.
-npm install /path/to/packages/bobbin-context-2.0.0.tgz
+npm install /path/to/packages/bobbin-context-2.1.0.tgz
 npx --no-install bobbin init --vault /path/to/existing/vault --features decision,intent,document
 npx --no-install bobbin recall --vault /path/to/existing/vault --query 'storage'
 ```
 
 A global CLI install from the same tarball is also supported:
-`npm install --global /path/to/packages/bobbin-context-2.0.0.tgz`.
+`npm install --global /path/to/packages/bobbin-context-2.1.0.tgz`.
 This document does not imply a package has been published to npm.
 
 The plugin checkout ships compiled `plugins/bobbin/dist/` so loading the plugin
@@ -99,6 +99,19 @@ CLI → library interoperability with an empty executable search path.
 one writer. `OwnerInputs`, `ReadResult`, `ApplyResult`, `Preview` and
 `BobbinError` are exported with declarations. `schema`/`capabilities` provide
 record field bounds and semantic assertion names at runtime.
+
+SNAP create and update share a 256 KiB (262,144-byte) limit on the compact JSON
+UTF-8 representation of the complete logical input: title, summary, captured source,
+references, tags, search terms, anchors and rendered sections. Partial updates check
+the merged result. Content has no separate character or list-item limits; metadata
+bounds remain. Markdown is preserved, with CRLF normalized to LF. CLI save/update
+accept `--sec-context @/path/to/context.md` or `--sec-context -` for raw stdin;
+multiline list items use JSON arrays inline or from `@/path/to/items.json`.
+`snapshot_input_too_large` reports `actual_bytes`, `max_bytes` and
+`measurement: snapshot_payload_utf8` without changing existing records or indexes.
+No automatic shortening or splitting occurs. Explicit load/read returns full content unless a read limit is supplied;
+search/recall budgets and other record kinds' limits are unchanged. Existing SNAPs
+need no migration; older runtimes may not read newly framed or larger SNAPs reliably.
 
 `supersede` requires a new capture ID and a caller-supplied same-claim attestation
 bound to `prepareSameClaim(id, successor)`. The current record is retained in

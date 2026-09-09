@@ -44,6 +44,7 @@ const common_1 = require("./common");
 const filesystem_1 = require("./filesystem");
 const owners_1 = require("./owners");
 const decision_1 = require("./decision");
+const snapshot_1 = require("./snapshot");
 const list = (value) => value === undefined ? [] : Array.isArray(value) ? value : [value];
 exports.list = list;
 function loadJson(value) {
@@ -61,6 +62,35 @@ const loadBody = (value, maximum = 8192) => value.startsWith('@@') ? value.slice
 exports.loadBody = loadBody;
 const bodyItems = (value) => (0, exports.list)(value).flatMap((x) => (0, exports.loadBody)(x).split(/\r?\n/).map(v => v.replace(/^\s*-\s?/, '').trim()).filter(Boolean));
 exports.bodyItems = bodyItems;
+function snapshotBody(value) {
+    if (value.startsWith('@') && !value.startsWith('@@')) {
+        const stat = fs.lstatSync(path.resolve(value.slice(1)), { throwIfNoEntry: false });
+        if (stat?.isFile())
+            (0, common_1.check)(stat.size <= snapshot_1.SNAP_TRANSPORT_MAX_BYTES, 'input_too_large', `SNAP transport input is ${stat.size} bytes; maximum is ${snapshot_1.SNAP_TRANSPORT_MAX_BYTES} bytes.`, { actual_bytes: stat.size, max_bytes: snapshot_1.SNAP_TRANSPORT_MAX_BYTES });
+    }
+    const text = value === '-' ? (0, filesystem_1.utf8)(fs.readFileSync(0)) : (0, exports.loadBody)(value, snapshot_1.SNAP_TRANSPORT_MAX_BYTES);
+    const actual_bytes = Buffer.byteLength(text);
+    (0, common_1.check)(actual_bytes <= snapshot_1.SNAP_TRANSPORT_MAX_BYTES, 'input_too_large', `SNAP transport input is ${actual_bytes} bytes; maximum is ${snapshot_1.SNAP_TRANSPORT_MAX_BYTES} bytes.`, { actual_bytes, max_bytes: snapshot_1.SNAP_TRANSPORT_MAX_BYTES });
+    return (0, snapshot_1.snapshotText)(text, 'SNAP content');
+}
+function snapshotItems(value) {
+    return (0, exports.list)(value).flatMap((item) => {
+        const text = snapshotBody(item);
+        // The existing one-item-per-line syntax remains available; JSON arrays
+        // carry multiline items without destroying Markdown indentation.
+        let parsed;
+        if (text.trimStart().startsWith('[')) {
+            try {
+                parsed = (0, common_1.strictJson)(text);
+            }
+            catch (error) {
+                if (!(error instanceof common_1.BobbinError))
+                    throw error;
+            }
+        }
+        return Array.isArray(parsed) ? (0, snapshot_1.snapshotList)(parsed, 'SNAP items') : text.split('\n').map(line => line.replace(/^\s*-\s?/, '').trim()).filter(Boolean);
+    });
+}
 const mappings = {
     snapshot: { 'sec-context': 'current_context', 'sec-open-items': 'open_items', 'sec-next-steps': 'next_steps', 'sec-decided': 'decided', 'sec-refs': 'refs', 'sec-capture-candidates': 'capture_candidates', 'sec-candidates': 'capture_candidates', 'anchor': 'anchors' },
     observation: { 'sec-observation': 'observation', 'sec-evidence': 'evidence', 'sec-impact': 'impact', 'sec-handling': 'current_handling', 'sec-followup': 'followup_conditions' }, archive: { 'sec-content': 'content', content: 'content' },
@@ -74,7 +104,7 @@ function inlineInputs(kind, flags) {
     const values = {};
     for (const [flag, key] of Object.entries(mappings[kind]))
         if (flags[flag] !== undefined)
-            values[key] = listFields.has(key) ? (0, exports.bodyItems)(flags[flag]) : (0, exports.loadBody)(flags[flag], kind === 'archive' ? 260000 : 8192);
+            values[key] = kind === 'snapshot' && key !== 'anchors' ? listFields.has(key) ? snapshotItems(flags[flag]) : snapshotBody(flags[flag]) : listFields.has(key) ? (0, exports.bodyItems)(flags[flag]) : (0, exports.loadBody)(flags[flag], kind === 'archive' ? 260000 : 8192);
     if (kind === 'assumption')
         values.unverified_ok = flags['attest-unverified-ok'] === true;
     if (kind === 'term')

@@ -53,7 +53,9 @@ test('decision and observation annotation cannot rewrite meaning or evidence', a
 });
 test('same-claim succession preserves reciprocal links and canonical history', async () => {
     const { b } = await fixture();
-    const id = await capture(b, 'decision');
+    const predecessor = await b.preview({ ...operation('decision'), now: '2026-09-08T12:00:00+09:00' });
+    await b.apply(predecessor, { source: 'user' });
+    const id = predecessor.operation.id;
     const successor = { ...operation('decision', { title: '후속 선택' }), id: newId(), now: '2026-09-09T12:00:00+09:00' };
     const semantic = await b.prepareSameClaim(id, successor), sameClaim = createAttestation(semantic, [{ name: 'same_semantic_claim', value: true, evidence_pointers: ['/predecessor/primary_claim', '/successor/primary_claim'] }], 'same_claim');
     const p = await b.preview({ action: 'supersede', id, successor, sameClaim, now: '2026-09-09T12:00:00+09:00' });

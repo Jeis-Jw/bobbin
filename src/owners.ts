@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { ObjectValue, contracts, check, object, shortText, stringList, canonicalJson, canonicalDigest, canonicalScope, canonicalKey, newId, timestamp, naturalFilename, filename, requireId, date, nfc, EXIT } from './common';
 import { Kind, kinds, ContextDocument, renderDocument, parseDocument, sectionValue } from './documents';
+import { snapshotText, snapshotList, renderSnapshotList, validateSnapshotSize, SNAP_CANDIDATE_MAX_BYTES } from './snapshot';
 export interface OwnerInputs {
     snapshot: {
         current_context: string;
@@ -119,7 +120,9 @@ export function validateOwnerInputs(kind: Kind, value: unknown): ObjectValue {
     check(Object.keys(value).every(k => Object.hasOwn(specs, k)) && Object.keys(fields.required).every(k => Object.hasOwn(value, k)), 'candidate_invalid', 'Owner input fields are incomplete or undeclared.');
     for (const [key, raw] of Object.entries(value)) {
         const spec = specs[key];
-        if (spec.type === 'string')
+        if (kind === 'snapshot' && key !== 'anchors')
+            result[key] = spec.type === 'string' ? snapshotText(raw, key) : snapshotList(raw, key, spec.min_items ?? 0);
+        else if (spec.type === 'string')
             result[key] = shortText(raw, key, spec.max_chars, true);
         else if (spec.type === 'string_list') {
             result[key] = stringList(raw, key, spec.min_items ?? 0, spec.max_items, spec.max_item_chars);
@@ -137,7 +140,8 @@ export function validateOwnerInputs(kind: Kind, value: unknown): ObjectValue {
         if (result[key])
             result[key] = canonicalKey(result[key]);
     const maximum = kind === 'archive' ? 512 * 1024 : 8192;
-    check(Buffer.byteLength(canonicalJson(result)) <= maximum, 'owner_input_too_large', 'Owner input exceeds its byte budget.', { kind, maximum }, EXIT.conflict);
+    if (kind !== 'snapshot')
+        check(Buffer.byteLength(canonicalJson(result)) <= maximum, 'owner_input_too_large', 'Owner input exceeds its byte budget.', { kind, maximum }, EXIT.conflict);
     return result;
 }
 export function createCandidate<K extends Kind>(input: CaptureInput<K>): Candidate {
@@ -183,7 +187,9 @@ export function validateCandidate(candidate: Candidate, targetKind?: Kind): {
         check(candidate.specialized_kinds.length === 1 && candidate.fallback_kind === null && Object.keys(candidate.owner_inputs).length === 1, 'candidate_invalid', 'Direct builtin capture must name exactly one owner.');
     if (kind === 'archive')
         stringList(candidate.source_refs, 'source_refs', 1);
-    check(Buffer.byteLength(canonicalJson(candidate)) <= (kind === 'archive' ? 512 * 1024 : 16384), 'candidate_too_large', 'Candidate exceeds its byte budget.', {}, EXIT.conflict);
+    if (kind === 'snapshot')
+        validateSnapshotSize({ ...candidate, anchors: values.anchors }, captureSections(kind, values));
+    check(Buffer.byteLength(kind === 'snapshot' ? JSON.stringify(candidate) : canonicalJson(candidate)) <= (kind === 'snapshot' ? SNAP_CANDIDATE_MAX_BYTES : kind === 'archive' ? 512 * 1024 : 16384), 'candidate_too_large', 'Candidate exceeds its byte budget.', {}, EXIT.conflict);
     return { kind, values };
 }
 export function pointer(value: unknown, reference: string): unknown {
@@ -227,6 +233,13 @@ export interface DraftOptions {
     filename?: string;
     targetKind?: Kind;
 }
+function captureSections(kind: Kind, values: ObjectValue): Record<string, string> {
+    const sections: Record<string, string> = {};
+    for (const [field, name] of Object.entries(sectionFields[kind]))
+        if (values[field] !== undefined && (!Array.isArray(values[field]) || values[field].length))
+            sections[name] = Array.isArray(values[field]) ? kind === 'snapshot' ? renderSnapshotList(values[field]) : values[field].map((v: string) => '- ' + v).join('\n') : values[field];
+    return sections;
+}
 export function draftCapture(candidate: Candidate, attestation: Attestation, options: DraftOptions = {}): {
     path: string;
     content: string;
@@ -255,10 +268,7 @@ export function draftCapture(candidate: Candidate, attestation: Attestation, opt
             relations[predicate] = values[field];
     if (Object.keys(relations).length)
         fm.relations = relations;
-    const sections: Record<string, string> = {};
-    for (const [field, name] of Object.entries(sectionFields[kind]))
-        if (values[field] !== undefined && (!Array.isArray(values[field]) || values[field].length))
-            sections[name] = Array.isArray(values[field]) ? values[field].map((v: string) => '- ' + v).join('\n') : values[field];
+    const sections = captureSections(kind, values);
     const content = renderDocument(fm, sections);
     return { path: `context/${kind}/${options.filename ? filename(options.filename) : naturalFilename(fm.title)}`, content, document: parseDocument(content) };
 }

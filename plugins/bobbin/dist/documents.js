@@ -17,6 +17,7 @@ exports.replaceBlock = replaceBlock;
 exports.readProfile = readProfile;
 exports.parseAreaIndex = parseAreaIndex;
 const common_1 = require("./common");
+const snapshot_1 = require("./snapshot");
 exports.kinds = Object.keys(common_1.contracts.capabilities);
 const schemaKind = (schema) => /^context-(.+)\/v1$/.exec(schema)?.[1] ?? '';
 exports.schemaKind = schemaKind;
@@ -172,6 +173,7 @@ function validateFrontmatter(fm, descriptor) {
     }
     const kind = (0, exports.schemaKind)(fm.schema);
     if (kind === 'snapshot') {
+        (0, common_1.check)(fm.section_delimiter === undefined || (typeof fm.section_delimiter === 'string' && /^bobbin-snap-[1-9][0-9]{0,5}$/.test(fm.section_delimiter)), 'schema_invalid', 'Invalid SNAP section delimiter.');
         (0, common_1.stringList)(fm.anchors ?? [], 'anchors', 0, 12, 36).forEach(x => (0, common_1.requireId)(x, 'anchors'));
         (0, common_1.check)(!['verified_at', 'retired_at', 'retired_reason', 'retirement_note', 'supersedes', 'superseded_by'].some(k => Object.hasOwn(fm, k)), 'lifecycle_invalid', 'Snapshot cannot carry history or verification fields.');
     }
@@ -260,26 +262,41 @@ function parseDocument(text, descriptor) {
         if (current)
             sections[current] = buffer.join('\n').trim();
     };
-    for (const line of lines.slice(closing + 2)) {
-        const f = /^\s*(```+|~~~+)/.exec(line)?.[1][0];
-        if (f)
-            fence = fence === f ? undefined : fence ?? f;
-        const heading = !fence ? /^## (.+)$/.exec(line) : null;
-        if (heading) {
-            save();
-            const name = heading[1], canonical = sectionName(fm.schema, name), index = allowed.indexOf(canonical), legacy = name !== canonical;
-            (0, common_1.check)(index > previous && (style === undefined || style === legacy), 'section_schema_error', 'Unknown, duplicate, mixed-style, or out-of-order H2 section.', { section: name });
-            current = name;
+    if (fm.schema === 'context-snapshot/v1' && fm.section_delimiter) {
+        (0, common_1.check)(lines.at(-1) === '', 'section_schema_error', 'Framed SNAP must end with a newline.');
+        const begin = `<!-- ${fm.section_delimiter} begin -->`, end = `<!-- ${fm.section_delimiter} end -->`;
+        for (let i = closing + 2; i < lines.length - 1;) {
+            const name = /^## (.+)$/.exec(lines[i])?.[1], canonical = name && sectionName(fm.schema, name), index = canonical ? allowed.indexOf(canonical) : -1, legacy = name !== canonical;
+            (0, common_1.check)(name && index > previous && (style === undefined || style === legacy) && lines[i + 1] === '' && lines[i + 2] === begin, 'section_schema_error', 'Invalid framed SNAP section.');
+            const stop = lines.indexOf(end, i + 3);
+            (0, common_1.check)(stop >= i + 3 && lines[stop + 1] === '', 'section_schema_error', 'SNAP section end is missing.');
+            sections[name] = lines.slice(i + 3, stop).join('\n');
             previous = index;
             style = legacy;
-            buffer = [];
-        }
-        else {
-            (0, common_1.check)(current || !line.trim(), 'section_schema_error', 'Content before the first section is forbidden.');
-            if (current)
-                buffer.push(line);
+            i = stop + 2;
         }
     }
+    else
+        for (const line of lines.slice(closing + 2)) {
+            const f = /^\s*(```+|~~~+)/.exec(line)?.[1][0];
+            if (f)
+                fence = fence === f ? undefined : fence ?? f;
+            const heading = !fence ? /^## (.+)$/.exec(line) : null;
+            if (heading) {
+                save();
+                const name = heading[1], canonical = sectionName(fm.schema, name), index = allowed.indexOf(canonical), legacy = name !== canonical;
+                (0, common_1.check)(index > previous && (style === undefined || style === legacy), 'section_schema_error', 'Unknown, duplicate, mixed-style, or out-of-order H2 section.', { section: name });
+                current = name;
+                previous = index;
+                style = legacy;
+                buffer = [];
+            }
+            else {
+                (0, common_1.check)(current || !line.trim(), 'section_schema_error', 'Content before the first section is forbidden.');
+                if (current)
+                    buffer.push(line);
+            }
+        }
     save();
     const result = { frontmatter: fm, sections, warnings };
     for (const key of required)
@@ -291,22 +308,47 @@ function parseDocument(text, descriptor) {
 function renderDocument(frontmatter, sections, descriptor) {
     const fm = Object.fromEntries(Object.entries(frontmatter).filter(([k]) => !['claim_fingerprint', 'source_claim_fingerprint'].includes(k)));
     validateFrontmatter(fm, descriptor);
-    const [allowed] = sectionSpec(fm.schema, descriptor), actual = new Map();
+    const [allowed, required] = sectionSpec(fm.schema, descriptor), actual = new Map();
     for (const key of Object.keys(sections)) {
         const canonical = sectionName(fm.schema, key);
         (0, common_1.check)(allowed.includes(canonical) && !actual.has(canonical), 'section_schema_error', 'Unknown or duplicate section.', { section: key });
         actual.set(canonical, key);
     }
-    const profile = (descriptor ?? descriptorFor((0, exports.schemaKind)(fm.schema)))?.structural_profile;
-    const known = [...common_1.contracts.common_keys, ...(profile ? Object.keys(profile.fields) : common_1.contracts.additive_keys[fm.schema] ?? [])];
-    const ordered = [...known.filter(k => Object.hasOwn(fm, k)), ...Object.keys(fm).filter(k => !known.includes(k)).sort(common_1.compareText)];
-    const lines = ['---', ...ordered.map(key => { (0, common_1.check)(validFrontmatterValue(fm[key]), 'frontmatter_unsupported', 'Unsupported frontmatter value.', { key }); return `${key}: ${(0, common_1.compactJson)(fm[key])}`; }), '---', ''];
-    for (const canonical of allowed) {
-        const key = actual.get(canonical);
-        if (key)
-            lines.push(`## ${key}`, '', sections[key].trim(), '');
+    const snapshot = fm.schema === 'context-snapshot/v1';
+    if (snapshot) {
+        sections = Object.fromEntries(Object.entries(sections).map(([key, value]) => [key, (0, snapshot_1.snapshotText)(value, key, required.includes(sectionName(fm.schema, key)))]));
+        (0, snapshot_1.validateSnapshotSize)(fm, Object.fromEntries(allowed.filter(key => actual.has(key)).map(key => [key, sections[actual.get(key)]])));
     }
-    const text = lines.join('\n').replace(/\n*$/, '') + '\n';
+    const render = () => {
+        const profile = (descriptor ?? descriptorFor((0, exports.schemaKind)(fm.schema)))?.structural_profile;
+        const known = [...common_1.contracts.common_keys, ...(profile ? Object.keys(profile.fields) : common_1.contracts.additive_keys[fm.schema] ?? [])];
+        const ordered = [...known.filter(k => Object.hasOwn(fm, k)), ...Object.keys(fm).filter(k => !known.includes(k)).sort(common_1.compareText)];
+        const lines = ['---', ...ordered.map(key => { (0, common_1.check)(validFrontmatterValue(fm[key]), 'frontmatter_unsupported', 'Unsupported frontmatter value.', { key }); return `${key}: ${(0, common_1.compactJson)(fm[key])}`; }), '---', ''];
+        for (const canonical of allowed) {
+            const key = actual.get(canonical);
+            if (key)
+                lines.push(`## ${key}`, '', ...(snapshot && fm.section_delimiter ? [`<!-- ${fm.section_delimiter} begin -->`, sections[key], `<!-- ${fm.section_delimiter} end -->`] : [sections[key].trim()]), '');
+        }
+        return lines.join('\n').replace(/\n*$/, '') + '\n';
+    };
+    if (snapshot && !fm.section_delimiter) {
+        try {
+            const text = render(), parsed = parseDocument(text, descriptor);
+            if (Object.entries(sections).every(([key, value]) => parsed.sections[key] === value))
+                return text;
+        }
+        catch (error) {
+            if (!(error instanceof common_1.BobbinError) || error.code !== 'section_schema_error')
+                throw error;
+        }
+    }
+    if (snapshot) {
+        let suffix = 1, delimiter = fm.section_delimiter ?? `bobbin-snap-${suffix}`;
+        while (Object.values(sections).some(value => value.includes(delimiter)))
+            delimiter = `bobbin-snap-${++suffix}`;
+        fm.section_delimiter = delimiter;
+    }
+    const text = render();
     parseDocument(text, descriptor);
     return text;
 }

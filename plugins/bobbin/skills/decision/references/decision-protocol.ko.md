@@ -2,7 +2,7 @@
 
 The TypeScript runtime uses one packaged core. For executable API/CLI and preview contracts, see the [current transport contract](../../context/references/node-runtime.md). The artifact schemas, semantic rules and lifecycle constraints below remain applicable; former Python subprocess/handshake and mutation-bundle details are historical.
 
-Bobbin 2.0.0의 설치·설정은 단일 `$bobbin:init`을 사용한다. 아래 사용자 승인 설명은 explicit 모드 기준이며, auto/adaptive는 [공통 기록 정책](../../context/references/recording-policy.md)에 따라 같은 검증 경로를 사용한다. 사용자 의사와 의미 검증은 승인 모드와 무관하게 유지한다. 기존 owner·schema 식별자는 내부 호환 계약이며 별도 설치 단위가 아니다.
+Bobbin 2.1.0의 설치·설정은 단일 `$bobbin:init`을 사용한다. 아래 사용자 승인 설명은 explicit 모드 기준이며, auto/adaptive는 [공통 기록 정책](../../context/references/recording-policy.md)에 따라 같은 검증 경로를 사용한다. 사용자 의사와 의미 검증은 승인 모드와 무관하게 유지한다. 기존 owner·schema 식별자는 내부 호환 계약이며 별도 설치 단위가 아니다.
 
 `decision_cli.mjs`는 `context-decision/v1`의 semantic owner다. complete DEC draft, lifecycle effect, `context-owner-plan/v1`, `context-owner-validation-receipt/v1`과 bounded recall만 만든다. filesystem write, directory 생성, index 갱신, lock, final approval digest 생성과 apply는 하지 않는다. physical writer는 `context-core` coordinator 하나다.
 

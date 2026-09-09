@@ -1,7 +1,8 @@
 import * as path from 'node:path';
 import { ObjectValue, check, exact, object, contracts, canonicalDigest, canonicalJson, shortText, stringList, EXIT } from './common';
 import { Kind, parseDocument } from './documents';
-import { Candidate, Attestation, DraftOptions, draftCapture, primaryClaim, validateAttestation } from './owners';
+import { Candidate, Attestation, DraftOptions, draftCapture, primaryClaim, validateAttestation, validateCandidate } from './owners';
+import { SNAP_MAX_BYTES, SNAP_TRANSPORT_MAX_BYTES, snapshotCandidate } from './snapshot';
 import type { CaptureOperation } from './store';
 export interface CandidateBatch {
     schema: 'context-capture-batch/v1';
@@ -15,8 +16,13 @@ export function validateCandidateBatch(batch: CandidateBatch | Candidate[]): Can
     }
     const candidates = Array.isArray(batch) ? batch : batch.candidates;
     check(Array.isArray(candidates) && candidates.length <= 8, 'candidate_batch_too_large', 'At most eight candidates are supported.');
-    const maximum = candidates.length === 1 && candidates[0].requested_kind === 'archive' ? 512 * 1024 : 16384;
-    check(Buffer.byteLength(canonicalJson(batch)) <= maximum, 'candidate_batch_too_large', 'Candidate batch exceeds its byte budget.');
+    const snapshots = candidates.filter(snapshotCandidate), ordinary = candidates.filter(c => !snapshotCandidate(c));
+    const maximum = snapshots.length ? SNAP_TRANSPORT_MAX_BYTES : candidates.length === 1 && candidates[0].requested_kind === 'archive' ? 512 * 1024 : 16384;
+    if (snapshots.length) {
+        const ordinaryBatch = Array.isArray(batch) ? ordinary : { ...batch, candidates: ordinary };
+        check(Buffer.byteLength(canonicalJson(ordinaryBatch)) <= 16384, 'candidate_batch_too_large', 'Non-SNAP candidates exceed their existing byte budget.');
+    }
+    check(Buffer.byteLength(snapshots.length ? JSON.stringify(batch) : canonicalJson(batch)) <= maximum, 'candidate_batch_too_large', 'Candidate batch exceeds its byte budget.');
     const ids = new Set<string>();
     for (const c of candidates) {
         check(object(c) && c.schema === 'context-capture-candidate/v1' && /^cand_[0-9a-f]{32}$/.test(c.candidate_id) && !ids.has(c.candidate_id), 'candidate_invalid', 'Invalid or duplicated candidate ID.');
@@ -24,7 +30,10 @@ export function validateCandidateBatch(batch: CandidateBatch | Candidate[]): Can
         check(!['claim_key', 'claim_fingerprint', 'source_claim_fingerprint'].some(k => Object.hasOwn(c, k)), 'schema_removed_field', 'Semantic identity surrogates are not permitted.');
         shortText(c.title, 'title', 120);
         shortText(c.summary, 'summary', 280);
-        shortText(c.claim, 'claim', c.requested_kind === 'archive' ? 65000 : 2000, true);
+        if (c.requested_kind === 'snapshot')
+            validateCandidate(c, 'snapshot');
+        else
+            shortText(c.claim, 'claim', snapshotCandidate(c) ? SNAP_MAX_BYTES : c.requested_kind === 'archive' ? 65000 : 2000, true);
         check(['conversation', 'workspace', 'manual', 'import'].includes(c.captured_from), 'candidate_invalid', 'Invalid provenance.');
         check(c.requested_kind === null || typeof c.requested_kind === 'string', 'candidate_invalid', 'Invalid requested kind.');
         const specialized = stringList(c.specialized_kinds, 'specialized_kinds', 0, 2, 80);
@@ -33,7 +42,7 @@ export function validateCandidateBatch(batch: CandidateBatch | Candidate[]): Can
         check(object(c.owner_inputs), 'candidate_invalid', 'Owner inputs are missing.');
         const relevant = new Set([...specialized, c.requested_kind, c.fallback_kind]);
         for (const [kind, input] of Object.entries(c.owner_inputs))
-            check(relevant.has(kind) && Buffer.byteLength(canonicalJson(input)) <= (kind === 'archive' ? 512 * 1024 : 8192), 'candidate_invalid', 'Unrouted or oversized owner input.');
+            check(relevant.has(kind) && (kind === 'snapshot' && snapshotCandidate(c) || Buffer.byteLength(canonicalJson(input)) <= (kind === 'archive' ? 512 * 1024 : 8192)), 'candidate_invalid', 'Unrouted or oversized owner input.');
     }
     return candidates;
 }
@@ -54,6 +63,8 @@ export function validateOwnerResult(result: ObjectValue): void {
     check(semantic && semantic.input_schema === semantic.value?.schema && semantic.input_digest === canonicalDigest(semantic.value) && semantic.value.candidate_id === result.candidate_id, 'claim_result_mismatch', 'Owner result must bind its actual candidate.', {}, EXIT.conflict);
     validateCandidateBatch([semantic.value]);
     if (result.decision === 'claim') {
+        if (kind === 'snapshot')
+            validateCandidate(semantic.value, 'snapshot');
         const attestation = result.semantic_attestations?.find((x: ObjectValue) => x.operation === 'claim');
         validateAttestation(attestation, semantic.value, capability.claim_assertions, 'claim', kind);
         if (result.artifact_drafts?.length)

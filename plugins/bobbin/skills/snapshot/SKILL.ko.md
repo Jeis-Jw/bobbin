@@ -17,7 +17,9 @@ SNAP은 `authority: staging`인 mutable resume context다. 결정·관찰의 권
 
 사용자가 snapshot content와 scope를 직접적·명시적·무조건적으로 확정해 handoff를 요청하면 semantic approval로 본다. 의미가 미확정일 때만 짧은 의미 질문을 한 번 하며, 단순 확인·칭찬·조건·수정 요청·화제 전환은 승인이 아니다. 저장 파일의 렌더링 본문을 보여주거나 별도 저장 승인을 묻지 않는다. 그다음 같은 응답에서 `save --approved`(또는 `update --approved`) 한 번을 실행한다. 내부 preview, receipt 동결, 무변경 apply가 한 번에 일어나며 transport detail은 비공개로 유지하고 승인 뒤 재생성하지 않는다. 렌더링이 의미를 더하거나 바꾸면 멈추므로 write를 보류하고 그 semantic delta만 확인한다. 명령 출력이 확인이며 파일을 다시 읽지 않는다. 어느 경로든 `approval_digest`는 내부에 머문다. 저수준 orchestration: `--approved` 없는 `save`는 write 0으로 frozen receipt를 돌려주며, `result.receipt_file`과 `result.approval_digest`를 그대로 `transaction apply --receipt-file ... --approved-digest ...`에 전달한다. receipt self-digest는 손상 검사일 뿐 승인 근거가 아니며 directory scan도 하지 않는다.
 
-`/loaded/...`는 skill catalog에 있는 이 파일의 실제 경로로 바꾼다. 열린 항목과 다음 단계는 한 줄에 한 항목(`- ` 불릿은 선택, 항목당 240자 이내)이고 현재 맥락은 한 문단이다.
+`/loaded/...`는 skill catalog에 있는 이 파일의 실제 경로로 바꾼다. 현재 맥락에는 제목·문단·표·코드 블록·파일 트리를 포함한 Markdown 전체를 담을 수 있다. 내용 목록에는 별도 개수·항목 길이 제한이 없으며, 제목·요약·메타데이터 제한과 참조 검증은 유지한다. 전체 논리적 SNAP 입력은 compact JSON의 UTF-8 크기로 256 KiB(262,144바이트) 이하여야 한다. 자동 축약·분할하지 않으며, 초과한 저장·갱신은 실제 크기와 허용 크기를 반환하고 기존 기록을 변경하지 않는다.
+
+저장과 갱신 모두 `--sec-context @/path/to/context.md`로 파일을 전달하거나, `--sec-context -`로 stdin의 Markdown 원문을 전달한다. 열린 항목과 다음 단계는 한 줄에 한 항목(`- ` 불릿은 선택)을 지원한다. 여러 줄인 항목은 `--sec-open-items '["첫 항목", "여러 줄\n항목"]'` 또는 `--sec-open-items @/path/to/items.json`으로 JSON 배열을 전달한다. Markdown 들여쓰기와 공백을 보존하며 CRLF는 LF로 바꾼다. 명시적 `load`는 전체 내용을 반환한다.
 
 ```bash
 node /loaded/bobbin/skills/context/scripts/context_cli.mjs snapshot list --json

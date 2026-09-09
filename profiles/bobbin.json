@@ -1,11 +1,11 @@
 {
   "schema": "context-plugin-profile/v3",
   "name": "bobbin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "compatibility": "same-major",
-  "release_set": "bobbin/2.0.0",
+  "release_set": "bobbin/2.1.0",
   "minimum_versions": {
-    "bobbin": "2.0.0"
+    "bobbin": "2.1.0"
   },
   "marketplace": "bobbin",
   "plugins": [

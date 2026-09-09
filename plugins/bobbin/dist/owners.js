@@ -12,6 +12,7 @@ exports.primaryClaim = primaryClaim;
 const node_crypto_1 = require("node:crypto");
 const common_1 = require("./common");
 const documents_1 = require("./documents");
+const snapshot_1 = require("./snapshot");
 exports.primaryFields = { snapshot: 'current_context', observation: 'observation', archive: 'content', decision: 'decision', assumption: 'assumption', term: 'definition', intent: 'intent', document: 'content' };
 exports.sectionFields = {
     snapshot: { current_context: 'Current context', open_items: 'Open items', next_steps: 'Next steps', decided: 'Decided', refs: 'References', capture_candidates: 'Capture candidates' },
@@ -41,7 +42,9 @@ function validateOwnerInputs(kind, value) {
     (0, common_1.check)(Object.keys(value).every(k => Object.hasOwn(specs, k)) && Object.keys(fields.required).every(k => Object.hasOwn(value, k)), 'candidate_invalid', 'Owner input fields are incomplete or undeclared.');
     for (const [key, raw] of Object.entries(value)) {
         const spec = specs[key];
-        if (spec.type === 'string')
+        if (kind === 'snapshot' && key !== 'anchors')
+            result[key] = spec.type === 'string' ? (0, snapshot_1.snapshotText)(raw, key) : (0, snapshot_1.snapshotList)(raw, key, spec.min_items ?? 0);
+        else if (spec.type === 'string')
             result[key] = (0, common_1.shortText)(raw, key, spec.max_chars, true);
         else if (spec.type === 'string_list') {
             result[key] = (0, common_1.stringList)(raw, key, spec.min_items ?? 0, spec.max_items, spec.max_item_chars);
@@ -59,7 +62,8 @@ function validateOwnerInputs(kind, value) {
         if (result[key])
             result[key] = (0, common_1.canonicalKey)(result[key]);
     const maximum = kind === 'archive' ? 512 * 1024 : 8192;
-    (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(result)) <= maximum, 'owner_input_too_large', 'Owner input exceeds its byte budget.', { kind, maximum }, common_1.EXIT.conflict);
+    if (kind !== 'snapshot')
+        (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(result)) <= maximum, 'owner_input_too_large', 'Owner input exceeds its byte budget.', { kind, maximum }, common_1.EXIT.conflict);
     return result;
 }
 function createCandidate(input) {
@@ -102,7 +106,9 @@ function validateCandidate(candidate, targetKind) {
         (0, common_1.check)(candidate.specialized_kinds.length === 1 && candidate.fallback_kind === null && Object.keys(candidate.owner_inputs).length === 1, 'candidate_invalid', 'Direct builtin capture must name exactly one owner.');
     if (kind === 'archive')
         (0, common_1.stringList)(candidate.source_refs, 'source_refs', 1);
-    (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(candidate)) <= (kind === 'archive' ? 512 * 1024 : 16384), 'candidate_too_large', 'Candidate exceeds its byte budget.', {}, common_1.EXIT.conflict);
+    if (kind === 'snapshot')
+        (0, snapshot_1.validateSnapshotSize)({ ...candidate, anchors: values.anchors }, captureSections(kind, values));
+    (0, common_1.check)(Buffer.byteLength(kind === 'snapshot' ? JSON.stringify(candidate) : (0, common_1.canonicalJson)(candidate)) <= (kind === 'snapshot' ? snapshot_1.SNAP_CANDIDATE_MAX_BYTES : kind === 'archive' ? 512 * 1024 : 16384), 'candidate_too_large', 'Candidate exceeds its byte budget.', {}, common_1.EXIT.conflict);
     return { kind, values };
 }
 function pointer(value, reference) {
@@ -140,6 +146,13 @@ function validateAttestation(attestation, input, required, operation = 'claim', 
     }
 }
 const compactPointers = (value) => JSON.stringify(value);
+function captureSections(kind, values) {
+    const sections = {};
+    for (const [field, name] of Object.entries(exports.sectionFields[kind]))
+        if (values[field] !== undefined && (!Array.isArray(values[field]) || values[field].length))
+            sections[name] = Array.isArray(values[field]) ? kind === 'snapshot' ? (0, snapshot_1.renderSnapshotList)(values[field]) : values[field].map((v) => '- ' + v).join('\n') : values[field];
+    return sections;
+}
 function draftCapture(candidate, attestation, options = {}) {
     const { kind, values } = validateCandidate(candidate, options.targetKind), capability = common_1.contracts.capabilities[kind];
     validateAttestation(attestation, candidate, capability.claim_assertions, 'claim', kind);
@@ -164,10 +177,7 @@ function draftCapture(candidate, attestation, options = {}) {
             relations[predicate] = values[field];
     if (Object.keys(relations).length)
         fm.relations = relations;
-    const sections = {};
-    for (const [field, name] of Object.entries(exports.sectionFields[kind]))
-        if (values[field] !== undefined && (!Array.isArray(values[field]) || values[field].length))
-            sections[name] = Array.isArray(values[field]) ? values[field].map((v) => '- ' + v).join('\n') : values[field];
+    const sections = captureSections(kind, values);
     const content = (0, documents_1.renderDocument)(fm, sections);
     return { path: `context/${kind}/${options.filename ? (0, common_1.filename)(options.filename) : (0, common_1.naturalFilename)(fm.title)}`, content, document: (0, documents_1.parseDocument)(content) };
 }

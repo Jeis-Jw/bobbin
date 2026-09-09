@@ -1,10 +1,11 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { ObjectValue, strictJson, check, fail, EXIT } from './common';
+import { ObjectValue, strictJson, check, fail, BobbinError, EXIT } from './common';
 import { bytes, utf8 } from './filesystem';
 import { Kind } from './documents';
 import { createCandidate, createAttestation, assertionPointers, Attestation, Candidate } from './owners';
 import { deriveSearchTerms } from './decision';
+import { SNAP_TRANSPORT_MAX_BYTES, snapshotText, snapshotList } from './snapshot';
 export const list = (value: any): any[] => value === undefined ? [] : Array.isArray(value) ? value : [value];
 export function loadJson(value: string): any {
     check(typeof value === 'string', 'usage_invalid', 'Missing JSON input.');
@@ -19,6 +20,30 @@ export function loadFile(value: string, maximum = 8192): string {
 }
 export const loadBody = (value: string, maximum = 8192): string => value.startsWith('@@') ? value.slice(1) : value.startsWith('@') ? loadFile(value.slice(1), maximum) : value;
 export const bodyItems = (value: any): string[] => list(value).flatMap((x: string) => loadBody(x).split(/\r?\n/).map(v => v.replace(/^\s*-\s?/, '').trim()).filter(Boolean));
+function snapshotBody(value: string): string {
+    if (value.startsWith('@') && !value.startsWith('@@')) {
+        const stat = fs.lstatSync(path.resolve(value.slice(1)), { throwIfNoEntry: false });
+        if (stat?.isFile())
+            check(stat.size <= SNAP_TRANSPORT_MAX_BYTES, 'input_too_large', `SNAP transport input is ${stat.size} bytes; maximum is ${SNAP_TRANSPORT_MAX_BYTES} bytes.`, { actual_bytes: stat.size, max_bytes: SNAP_TRANSPORT_MAX_BYTES });
+    }
+    const text = value === '-' ? utf8(fs.readFileSync(0)) : loadBody(value, SNAP_TRANSPORT_MAX_BYTES);
+    const actual_bytes = Buffer.byteLength(text);
+    check(actual_bytes <= SNAP_TRANSPORT_MAX_BYTES, 'input_too_large', `SNAP transport input is ${actual_bytes} bytes; maximum is ${SNAP_TRANSPORT_MAX_BYTES} bytes.`, { actual_bytes, max_bytes: SNAP_TRANSPORT_MAX_BYTES });
+    return snapshotText(text, 'SNAP content');
+}
+function snapshotItems(value: any): string[] {
+    return list(value).flatMap((item: string) => {
+        const text = snapshotBody(item);
+        // The existing one-item-per-line syntax remains available; JSON arrays
+        // carry multiline items without destroying Markdown indentation.
+        let parsed: unknown;
+        if (text.trimStart().startsWith('[')) {
+            try { parsed = strictJson(text); }
+            catch (error) { if (!(error instanceof BobbinError)) throw error; }
+        }
+        return Array.isArray(parsed) ? snapshotList(parsed, 'SNAP items') : text.split('\n').map(line => line.replace(/^\s*-\s?/, '').trim()).filter(Boolean);
+    });
+}
 const mappings: Record<Kind, Record<string, string>> = {
     snapshot: { 'sec-context': 'current_context', 'sec-open-items': 'open_items', 'sec-next-steps': 'next_steps', 'sec-decided': 'decided', 'sec-refs': 'refs', 'sec-capture-candidates': 'capture_candidates', 'sec-candidates': 'capture_candidates', 'anchor': 'anchors' },
     observation: { 'sec-observation': 'observation', 'sec-evidence': 'evidence', 'sec-impact': 'impact', 'sec-handling': 'current_handling', 'sec-followup': 'followup_conditions' }, archive: { 'sec-content': 'content', content: 'content' },
@@ -32,7 +57,7 @@ export function inlineInputs(kind: Kind, flags: ObjectValue): ObjectValue {
     const values: ObjectValue = {};
     for (const [flag, key] of Object.entries(mappings[kind]))
         if (flags[flag] !== undefined)
-            values[key] = listFields.has(key) ? bodyItems(flags[flag]) : loadBody(flags[flag], kind === 'archive' ? 260000 : 8192);
+            values[key] = kind === 'snapshot' && key !== 'anchors' ? listFields.has(key) ? snapshotItems(flags[flag]) : snapshotBody(flags[flag]) : listFields.has(key) ? bodyItems(flags[flag]) : loadBody(flags[flag], kind === 'archive' ? 260000 : 8192);
     if (kind === 'assumption')
         values.unverified_ok = flags['attest-unverified-ok'] === true;
     if (kind === 'term')

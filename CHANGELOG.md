@@ -3,6 +3,21 @@
 Bobbin has one public package version. Historical 0.x entries describe Context Plugins release sets, whose component versions could differ. Source preparation, tags and publication remain separate states.
 
 
+## 2.1.0 — SNAP storage — 2026-09-09
+
+- Allow SNAP logical input up to 256 KiB (262,144 UTF-8 bytes), with one size
+  check for CLI/Node creation and full or merged updates. Remove SNAP-only
+  content character, paragraph and list limits; retain metadata and reference
+  validation, other record limits and search/recall budgets.
+- Preserve Markdown, Unicode, indentation and trailing spaces; normalize CRLF
+  to LF. Use section framing only when needed for lossless round trips, while
+  retaining existing legacy SNAP reads without automatic migration.
+- Accept raw Markdown from CLI files or stdin and JSON arrays for multiline
+  list items. Oversize errors report actual and allowed bytes without automatic
+  shortening, splitting or partial record/index writes.
+- Older runtimes may not read newly framed or larger SNAPs reliably; use the
+  updated runtime for those records.
+
 ## 2.0.0 — Shared TypeScript core — 2026-09-08
 
 - Replace the Python product runtime with one reusable TypeScript core, Node CLI,

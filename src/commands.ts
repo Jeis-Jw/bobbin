@@ -5,6 +5,7 @@ import { sectionFields, draftCapture, createAttestation, validateCandidate } fro
 import { list, loadJson, bodyItems, captureArguments, inlineInputs } from './cli-input';
 import { freezeReceipt, applyReceipt, rejectReceipt } from './receipts';
 import { draftOwnerResult, declineOwnerResult, validateCandidateBatch, operationFromOwnerResult } from './routing';
+import { renderSnapshotList } from './snapshot';
 export function authorization(flags: ObjectValue): Authorization {
     if (flags.authorization)
         return loadJson(flags.authorization);
@@ -120,7 +121,7 @@ export async function kindCommand(bobbin: Bobbin, kind: Kind, command: string, w
             const inputs = inlineInputs(kind, flags);
             for (const [field, name] of Object.entries(sectionFields[kind]))
                 if (inputs[field] !== undefined)
-                    sections[name] = Array.isArray(inputs[field]) ? inputs[field].map((x: string) => '- ' + x).join('\n') : inputs[field];
+                    sections[name] = Array.isArray(inputs[field]) ? kind === 'snapshot' ? renderSnapshotList(inputs[field]) : inputs[field].map((x: string) => '- ' + x).join('\n') : inputs[field];
         }
         if (actual === 'reverify') {
             values.verified_at = flags['verified-at'];

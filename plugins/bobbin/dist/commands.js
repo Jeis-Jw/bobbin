@@ -8,6 +8,7 @@ const owners_1 = require("./owners");
 const cli_input_1 = require("./cli-input");
 const receipts_1 = require("./receipts");
 const routing_1 = require("./routing");
+const snapshot_1 = require("./snapshot");
 function authorization(flags) {
     if (flags.authorization)
         return (0, cli_input_1.loadJson)(flags.authorization);
@@ -124,7 +125,7 @@ async function kindCommand(bobbin, kind, command, words, flags) {
             const inputs = (0, cli_input_1.inlineInputs)(kind, flags);
             for (const [field, name] of Object.entries(owners_1.sectionFields[kind]))
                 if (inputs[field] !== undefined)
-                    sections[name] = Array.isArray(inputs[field]) ? inputs[field].map((x) => '- ' + x).join('\n') : inputs[field];
+                    sections[name] = Array.isArray(inputs[field]) ? kind === 'snapshot' ? (0, snapshot_1.renderSnapshotList)(inputs[field]) : inputs[field].map((x) => '- ' + x).join('\n') : inputs[field];
         }
         if (actual === 'reverify') {
             values.verified_at = flags['verified-at'];

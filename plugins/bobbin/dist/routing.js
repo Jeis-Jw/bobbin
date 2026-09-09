@@ -43,6 +43,7 @@ const path = __importStar(require("node:path"));
 const common_1 = require("./common");
 const documents_1 = require("./documents");
 const owners_1 = require("./owners");
+const snapshot_1 = require("./snapshot");
 function validateCandidateBatch(batch) {
     if (!Array.isArray(batch)) {
         (0, common_1.exact)(batch, ['schema', 'audit_count', 'candidates'], 'candidate_invalid');
@@ -50,8 +51,13 @@ function validateCandidateBatch(batch) {
     }
     const candidates = Array.isArray(batch) ? batch : batch.candidates;
     (0, common_1.check)(Array.isArray(candidates) && candidates.length <= 8, 'candidate_batch_too_large', 'At most eight candidates are supported.');
-    const maximum = candidates.length === 1 && candidates[0].requested_kind === 'archive' ? 512 * 1024 : 16384;
-    (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(batch)) <= maximum, 'candidate_batch_too_large', 'Candidate batch exceeds its byte budget.');
+    const snapshots = candidates.filter(snapshot_1.snapshotCandidate), ordinary = candidates.filter(c => !(0, snapshot_1.snapshotCandidate)(c));
+    const maximum = snapshots.length ? snapshot_1.SNAP_TRANSPORT_MAX_BYTES : candidates.length === 1 && candidates[0].requested_kind === 'archive' ? 512 * 1024 : 16384;
+    if (snapshots.length) {
+        const ordinaryBatch = Array.isArray(batch) ? ordinary : { ...batch, candidates: ordinary };
+        (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(ordinaryBatch)) <= 16384, 'candidate_batch_too_large', 'Non-SNAP candidates exceed their existing byte budget.');
+    }
+    (0, common_1.check)(Buffer.byteLength(snapshots.length ? JSON.stringify(batch) : (0, common_1.canonicalJson)(batch)) <= maximum, 'candidate_batch_too_large', 'Candidate batch exceeds its byte budget.');
     const ids = new Set();
     for (const c of candidates) {
         (0, common_1.check)((0, common_1.object)(c) && c.schema === 'context-capture-candidate/v1' && /^cand_[0-9a-f]{32}$/.test(c.candidate_id) && !ids.has(c.candidate_id), 'candidate_invalid', 'Invalid or duplicated candidate ID.');
@@ -59,7 +65,10 @@ function validateCandidateBatch(batch) {
         (0, common_1.check)(!['claim_key', 'claim_fingerprint', 'source_claim_fingerprint'].some(k => Object.hasOwn(c, k)), 'schema_removed_field', 'Semantic identity surrogates are not permitted.');
         (0, common_1.shortText)(c.title, 'title', 120);
         (0, common_1.shortText)(c.summary, 'summary', 280);
-        (0, common_1.shortText)(c.claim, 'claim', c.requested_kind === 'archive' ? 65000 : 2000, true);
+        if (c.requested_kind === 'snapshot')
+            (0, owners_1.validateCandidate)(c, 'snapshot');
+        else
+            (0, common_1.shortText)(c.claim, 'claim', (0, snapshot_1.snapshotCandidate)(c) ? snapshot_1.SNAP_MAX_BYTES : c.requested_kind === 'archive' ? 65000 : 2000, true);
         (0, common_1.check)(['conversation', 'workspace', 'manual', 'import'].includes(c.captured_from), 'candidate_invalid', 'Invalid provenance.');
         (0, common_1.check)(c.requested_kind === null || typeof c.requested_kind === 'string', 'candidate_invalid', 'Invalid requested kind.');
         const specialized = (0, common_1.stringList)(c.specialized_kinds, 'specialized_kinds', 0, 2, 80);
@@ -68,7 +77,7 @@ function validateCandidateBatch(batch) {
         (0, common_1.check)((0, common_1.object)(c.owner_inputs), 'candidate_invalid', 'Owner inputs are missing.');
         const relevant = new Set([...specialized, c.requested_kind, c.fallback_kind]);
         for (const [kind, input] of Object.entries(c.owner_inputs))
-            (0, common_1.check)(relevant.has(kind) && Buffer.byteLength((0, common_1.canonicalJson)(input)) <= (kind === 'archive' ? 512 * 1024 : 8192), 'candidate_invalid', 'Unrouted or oversized owner input.');
+            (0, common_1.check)(relevant.has(kind) && (kind === 'snapshot' && (0, snapshot_1.snapshotCandidate)(c) || Buffer.byteLength((0, common_1.canonicalJson)(input)) <= (kind === 'archive' ? 512 * 1024 : 8192)), 'candidate_invalid', 'Unrouted or oversized owner input.');
     }
     return candidates;
 }
@@ -89,6 +98,8 @@ function validateOwnerResult(result) {
     (0, common_1.check)(semantic && semantic.input_schema === semantic.value?.schema && semantic.input_digest === (0, common_1.canonicalDigest)(semantic.value) && semantic.value.candidate_id === result.candidate_id, 'claim_result_mismatch', 'Owner result must bind its actual candidate.', {}, common_1.EXIT.conflict);
     validateCandidateBatch([semantic.value]);
     if (result.decision === 'claim') {
+        if (kind === 'snapshot')
+            (0, owners_1.validateCandidate)(semantic.value, 'snapshot');
         const attestation = result.semantic_attestations?.find((x) => x.operation === 'claim');
         (0, owners_1.validateAttestation)(attestation, semantic.value, capability.claim_assertions, 'claim', kind);
         if (result.artifact_drafts?.length)

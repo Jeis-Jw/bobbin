@@ -46,6 +46,7 @@ const catalog_1 = require("./catalog");
 const decision_1 = require("./decision");
 const runtime_1 = require("./runtime");
 const routing_1 = require("./routing");
+const snapshot_1 = require("./snapshot");
 const FEATURES = ['decision', 'assumption', 'term', 'intent', 'document'];
 const BUILTINS = ['snapshot', 'observation', 'archive'];
 function loadSettings(project) {
@@ -399,7 +400,13 @@ class Bobbin {
                         ids.add(id);
             const read_preconditions = (0, catalog_1.scanRecords)(this.vault, areas).filter(r => ids.has(r.row.id) && !changedPaths.has(r.path)).map(r => ({ path: r.path, sha256: (0, common_1.sha256)(Buffer.from(r.content)) })).sort((a, b) => (0, common_1.compareText)(a.path, b.path));
             const base = { schema: 'bobbin-preview/v1', plan_id: (0, common_1.newPlanId)(), vault_identity: (0, filesystem_1.identity)(this.vault), project_policy: this.policyBinding(), operation, changes, read_preconditions };
-            (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)(base)) <= (operation.action === 'capture' && operation.candidate.requested_kind === 'archive' ? 1024 * 1024 : 128 * 1024), 'approval_preview_too_large', 'Preview exceeds the mutation byte budget.');
+            const snapshots = records.filter(r => r.kind === 'snapshot' && changedPaths.has(r.path));
+            if (snapshots.length) {
+                const ids = new Set(snapshots.map(r => r.row.id)), paths = new Set(snapshots.map(r => r.path));
+                const ordinary = (operation.action === 'batch' ? operation.operations : [operation]).filter(op => !('id' in op && ids.has(op.id)));
+                (0, common_1.check)(Buffer.byteLength((0, common_1.canonicalJson)({ ...base, operation: { action: 'batch', operations: ordinary }, changes: changes.filter(c => !paths.has(c.path)) })) <= 128 * 1024, 'approval_preview_too_large', 'Non-SNAP operations exceed their existing byte budget.');
+            }
+            (0, common_1.check)(Buffer.byteLength(snapshots.length ? JSON.stringify(base) : (0, common_1.canonicalJson)(base)) <= (snapshots.length ? snapshot_1.SNAP_TRANSPORT_MAX_BYTES : operation.action === 'capture' && operation.candidate.requested_kind === 'archive' ? 1024 * 1024 : 128 * 1024), 'approval_preview_too_large', 'Preview exceeds the mutation byte budget.');
             return { ...base, approval_digest: previewDigest(base), state: 'awaiting_approval', applied: false };
         }, true);
     }
